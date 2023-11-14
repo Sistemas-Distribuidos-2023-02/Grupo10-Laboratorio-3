@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3";
+
+service MiServicio {
+    rpc MiMetodo(MiMensaje) returns (Respuesta);
+}
+  
+message MiMensaje {
+    string first_name = 1;
+}
+
+message Respuesta {
+    string reply = 1;
+}
