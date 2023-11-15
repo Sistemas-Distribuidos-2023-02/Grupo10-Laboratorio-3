@@ -21,7 +21,26 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 	return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
 }
 
-// Implementa los demás métodos del servicio de manera similar
+func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.RenombrarBaseRequest) (*pb.Respuesta, error) {
+	// Lógica para el comando AgregarBase
+	// ...
+
+	return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
+}
+
+func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.ActualizarValorRequest) (*pb.Respuesta, error) {
+	// Lógica para el comando AgregarBase
+	// ...
+
+	return &pb.Respuesta{Mensaje: "Comando ActualizaValor ejecutado", Exitoso: true}, nil
+}
+
+func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRequest) (*pb.Respuesta, error) {
+	// Lógica para el comando AgregarBase
+	// ...
+
+	return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
+}
 
 func main() {
 	listener, err := net.Listen("tcp", ":50051")
