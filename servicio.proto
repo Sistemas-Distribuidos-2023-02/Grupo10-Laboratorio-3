@@ -9,6 +9,7 @@ service MiServicio {
     rpc RenombrarBase (RenombrarBaseRequest) returns (Respuesta);
     rpc ActualizarValor (ActualizarValorRequest) returns (Respuesta);
     rpc BorrarBase (BorrarBaseRequest) returns (Respuesta);
+    rpc GetSoldados (GetSoldadosRequest) returns (GetSoldadosResponse);
 }
   
 message AgregarBaseRequest {
@@ -17,24 +18,35 @@ message AgregarBaseRequest {
     float valor = 3;
   }
   
-  message RenombrarBaseRequest {
-    string nombre_sector = 1;
-    string nombre_base = 2;
-    string nuevo_nombre = 3;
-  }
+message RenombrarBaseRequest {
+  string nombre_sector = 1;
+  string nombre_base = 2;
+  string nuevo_nombre = 3;
+}
   
-  message ActualizarValorRequest {
-    string nombre_sector = 1;
-    string nombre_base = 2;
-    float nuevo_valor = 3;
-  }
+message ActualizarValorRequest {
+  string nombre_sector = 1;
+  string nombre_base = 2;
+  float nuevo_valor = 3;
+}
   
-  message BorrarBaseRequest {
-    string nombre_sector = 1;
-    string nombre_base = 2;
-  }
+message BorrarBaseRequest {
+  string nombre_sector = 1;
+  string nombre_base = 2;
+}
   
 message Respuesta {
     string mensaje = 1;
     bool exitoso = 2;
+}
+
+message GetSoldadosRequest {
+    string nombre_sector = 1;
+    string nombre_base = 2;
+}
+
+message GetSoldadosResponse {
+    int32 cantidad_soldados = 1;
+    // Añade cualquier otro campo necesario, como el reloj vectorial
+    // por ejemplo: map<string, int32> reloj_vectorial = 2;
 }
