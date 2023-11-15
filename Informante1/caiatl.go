@@ -5,36 +5,34 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 
 	"google.golang.org/grpc"
 )
 
-type baseServiceServer struct {
-	pb.UnimplementedMiServicioServer
+func enviarComandoAgregarBase(client pb.MiServicioClient) {
+	req := &pb.AgregarBaseRequest{
+		// Establece los campos necesarios para el comando AgregarBase
+	}
+
+	resp, err := client.AgregarBase(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error al enviar comando AgregarBase: %v", err)
+	}
+
+	fmt.Printf("Respuesta del servidor: %s\n", resp.Mensaje)
 }
 
-func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
-	// Lógica para el comando AgregarBase
-	// ...
-
-	return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
-}
-
-// Implementa los demás métodos del servicio de manera similar
+// Implementa funciones similares para los demás comandos
 
 func main() {
-	listener, err := net.Listen("tcp", ":50051")
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Error al escuchar: %v", err)
+		log.Fatalf("Error al conectar al servidor gRPC: %v", err)
 	}
+	defer conn.Close()
 
-	server := grpc.NewServer()
-	pb.RegisterMiServicioServer(server, &baseServiceServer{})
+	client := pb.NewMiServicioClient(conn)
 
-	fmt.Println("Servidor gRPC iniciado en el puerto 50051")
-
-	if err := server.Serve(listener); err != nil {
-		log.Fatalf("Error al servir: %v", err)
-	}
+	// Llama a las funciones para enviar comandos según sea necesario
+	enviarComandoAgregarBase(client)
 }
