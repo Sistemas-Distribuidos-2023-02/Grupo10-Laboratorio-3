@@ -19,14 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	MiServicio_MiMetodo_FullMethodName = "/main.MiServicio/MiMetodo"
+	MiServicio_AgregarBase_FullMethodName     = "/main.MiServicio/AgregarBase"
+	MiServicio_RenombrarBase_FullMethodName   = "/main.MiServicio/RenombrarBase"
+	MiServicio_ActualizarValor_FullMethodName = "/main.MiServicio/ActualizarValor"
+	MiServicio_BorrarBase_FullMethodName      = "/main.MiServicio/BorrarBase"
 )
 
 // MiServicioClient is the client API for MiServicio service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MiServicioClient interface {
-	MiMetodo(ctx context.Context, in *MiMensaje, opts ...grpc.CallOption) (*Respuesta, error)
+	AgregarBase(ctx context.Context, in *AgregarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error)
+	RenombrarBase(ctx context.Context, in *RenombrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error)
+	ActualizarValor(ctx context.Context, in *ActualizarValorRequest, opts ...grpc.CallOption) (*Respuesta, error)
+	BorrarBase(ctx context.Context, in *BorrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error)
 }
 
 type miServicioClient struct {
@@ -37,9 +43,36 @@ func NewMiServicioClient(cc grpc.ClientConnInterface) MiServicioClient {
 	return &miServicioClient{cc}
 }
 
-func (c *miServicioClient) MiMetodo(ctx context.Context, in *MiMensaje, opts ...grpc.CallOption) (*Respuesta, error) {
+func (c *miServicioClient) AgregarBase(ctx context.Context, in *AgregarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error) {
 	out := new(Respuesta)
-	err := c.cc.Invoke(ctx, MiServicio_MiMetodo_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, MiServicio_AgregarBase_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *miServicioClient) RenombrarBase(ctx context.Context, in *RenombrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error) {
+	out := new(Respuesta)
+	err := c.cc.Invoke(ctx, MiServicio_RenombrarBase_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *miServicioClient) ActualizarValor(ctx context.Context, in *ActualizarValorRequest, opts ...grpc.CallOption) (*Respuesta, error) {
+	out := new(Respuesta)
+	err := c.cc.Invoke(ctx, MiServicio_ActualizarValor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *miServicioClient) BorrarBase(ctx context.Context, in *BorrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error) {
+	out := new(Respuesta)
+	err := c.cc.Invoke(ctx, MiServicio_BorrarBase_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +83,10 @@ func (c *miServicioClient) MiMetodo(ctx context.Context, in *MiMensaje, opts ...
 // All implementations must embed UnimplementedMiServicioServer
 // for forward compatibility
 type MiServicioServer interface {
-	MiMetodo(context.Context, *MiMensaje) (*Respuesta, error)
+	AgregarBase(context.Context, *AgregarBaseRequest) (*Respuesta, error)
+	RenombrarBase(context.Context, *RenombrarBaseRequest) (*Respuesta, error)
+	ActualizarValor(context.Context, *ActualizarValorRequest) (*Respuesta, error)
+	BorrarBase(context.Context, *BorrarBaseRequest) (*Respuesta, error)
 	mustEmbedUnimplementedMiServicioServer()
 }
 
@@ -58,8 +94,17 @@ type MiServicioServer interface {
 type UnimplementedMiServicioServer struct {
 }
 
-func (UnimplementedMiServicioServer) MiMetodo(context.Context, *MiMensaje) (*Respuesta, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method MiMetodo not implemented")
+func (UnimplementedMiServicioServer) AgregarBase(context.Context, *AgregarBaseRequest) (*Respuesta, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AgregarBase not implemented")
+}
+func (UnimplementedMiServicioServer) RenombrarBase(context.Context, *RenombrarBaseRequest) (*Respuesta, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RenombrarBase not implemented")
+}
+func (UnimplementedMiServicioServer) ActualizarValor(context.Context, *ActualizarValorRequest) (*Respuesta, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActualizarValor not implemented")
+}
+func (UnimplementedMiServicioServer) BorrarBase(context.Context, *BorrarBaseRequest) (*Respuesta, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BorrarBase not implemented")
 }
 func (UnimplementedMiServicioServer) mustEmbedUnimplementedMiServicioServer() {}
 
@@ -74,20 +119,74 @@ func RegisterMiServicioServer(s grpc.ServiceRegistrar, srv MiServicioServer) {
 	s.RegisterService(&MiServicio_ServiceDesc, srv)
 }
 
-func _MiServicio_MiMetodo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MiMensaje)
+func _MiServicio_AgregarBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AgregarBaseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MiServicioServer).MiMetodo(ctx, in)
+		return srv.(MiServicioServer).AgregarBase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MiServicio_MiMetodo_FullMethodName,
+		FullMethod: MiServicio_AgregarBase_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MiServicioServer).MiMetodo(ctx, req.(*MiMensaje))
+		return srv.(MiServicioServer).AgregarBase(ctx, req.(*AgregarBaseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MiServicio_RenombrarBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RenombrarBaseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MiServicioServer).RenombrarBase(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MiServicio_RenombrarBase_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MiServicioServer).RenombrarBase(ctx, req.(*RenombrarBaseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MiServicio_ActualizarValor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActualizarValorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MiServicioServer).ActualizarValor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MiServicio_ActualizarValor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MiServicioServer).ActualizarValor(ctx, req.(*ActualizarValorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MiServicio_BorrarBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BorrarBaseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MiServicioServer).BorrarBase(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MiServicio_BorrarBase_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MiServicioServer).BorrarBase(ctx, req.(*BorrarBaseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +199,20 @@ var MiServicio_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MiServicioServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "MiMetodo",
-			Handler:    _MiServicio_MiMetodo_Handler,
+			MethodName: "AgregarBase",
+			Handler:    _MiServicio_AgregarBase_Handler,
+		},
+		{
+			MethodName: "RenombrarBase",
+			Handler:    _MiServicio_RenombrarBase_Handler,
+		},
+		{
+			MethodName: "ActualizarValor",
+			Handler:    _MiServicio_ActualizarValor_Handler,
+		},
+		{
+			MethodName: "BorrarBase",
+			Handler:    _MiServicio_BorrarBase_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

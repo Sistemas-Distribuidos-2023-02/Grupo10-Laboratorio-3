@@ -5,13 +5,36 @@ package main;
 option go_package = "github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3";
 
 service MiServicio {
-    rpc MiMetodo(MiMensaje) returns (Respuesta);
+    rpc AgregarBase (AgregarBaseRequest) returns (Respuesta);
+    rpc RenombrarBase (RenombrarBaseRequest) returns (Respuesta);
+    rpc ActualizarValor (ActualizarValorRequest) returns (Respuesta);
+    rpc BorrarBase (BorrarBaseRequest) returns (Respuesta);
 }
   
-message MiMensaje {
-    string first_name = 1;
-}
-
+message AgregarBaseRequest {
+    string nombre_sector = 1;
+    string nombre_base = 2;
+    float valor = 3;
+  }
+  
+  message RenombrarBaseRequest {
+    string nombre_sector = 1;
+    string nombre_base = 2;
+    string nuevo_nombre = 3;
+  }
+  
+  message ActualizarValorRequest {
+    string nombre_sector = 1;
+    string nombre_base = 2;
+    float nuevo_valor = 3;
+  }
+  
+  message BorrarBaseRequest {
+    string nombre_sector = 1;
+    string nombre_base = 2;
+  }
+  
 message Respuesta {
-    string reply = 1;
+    string mensaje = 1;
+    bool exitoso = 2;
 }
