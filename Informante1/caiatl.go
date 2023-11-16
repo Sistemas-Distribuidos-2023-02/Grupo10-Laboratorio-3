@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"google.golang.org/grpc"
 )
@@ -92,21 +93,30 @@ func main() {
 		// Puedes usar strings.Split o alguna otra técnica de parsing
 
 		// Ejemplo de parsing (puede necesitar ser modificado según tus necesidades):
-		var comando, nombreSector, nombreBase string
-		var valor interface{}
-		n, _ := fmt.Sscanf(entrada, "%s %s %s %v", &comando, &nombreSector, &nombreBase, &valor)
+		var comando, nombreSector, nombreBase, nuevaBase string
+		n, _ := fmt.Sscanf(entrada, "%s %s %s %s", &comando, &nombreSector, &nombreBase, &nuevaBase)
 		if n >= 3 {
-			switch comando {
-			case "AgregarBase":
-				enviarComandoAgregarBase(client, nombreSector, nombreBase, valor)
-			case "RenombrarBase":
-				enviarComandoRenombrarBase(client, nombreSector, nombreBase, valor)
-			case "ActualizarValor":
-				enviarComandoActualizarValor(client, nombreSector, nombreBase, valor)
-			case "BorrarBase":
-				enviarComandoBorrarBase(client, nombreSector, nombreBase)
-			default:
-				fmt.Println("Comando no reconocido")
+			if floatValue, err := strconv.ParseFloat(nuevaBase, 32); err == nil {
+				valor := float32(floatValue)
+				switch comando {
+				case "AgregarBase":
+					enviarComandoAgregarBase(client, nombreSector, nombreBase, valor)
+				case "ActualizarValor":
+					enviarComandoActualizarValor(client, nombreSector, nombreBase, valor)
+				case "BorrarBase":
+					enviarComandoBorrarBase(client, nombreSector, nombreBase)
+				default:
+					fmt.Println("Comando no reconocido")
+				}
+			} else {
+				switch comando {
+				case "RenombrarBase":
+					enviarComandoRenombrarBase(client, nombreSector, nombreBase, nuevaBase)
+				case "BorrarBase":
+					enviarComandoBorrarBase(client, nombreSector, nombreBase)
+				default:
+					fmt.Println("Comando no reconocido")
+				}
 			}
 		} else {
 			fmt.Println("Entrada no válida")
