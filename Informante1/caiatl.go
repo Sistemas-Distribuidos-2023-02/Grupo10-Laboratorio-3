@@ -24,7 +24,28 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 		log.Fatalf("Error al enviar comando AgregarBase: %v", err)
 	}
 
-	fmt.Printf("Respuesta del servidor: %s\n", resp.Mensaje)
+	puerto := resp.Mensaje
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectar con el fulcrum: %v", err)
+	}
+	defer conn.Close()
+	clienteFulcrum := pb.NewMiServicioClient(conn)
+
+	respFulcrum, err := clienteFulcrum.AgregarBase(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error al enviar comando AgregarBase al fulcrum: %v", err)
+	}
+	fulcrum := ""
+	switch puerto {
+	case "localhost:50052":
+		fulcrum = "fulcrum1"
+	case "localhost:50053":
+		fulcrum = "fulcrum2"
+	case "localhost:50054":
+		fulcrum = "fulcrum3"
+	}
+	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
 
 func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombreBase string, valor interface{}) {
@@ -39,8 +60,30 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 		log.Fatalf("Error al enviar comando RenombrarBase: %v", err)
 	}
 
-	fmt.Printf("Respuesta del servidor: %s\n", resp.Mensaje)
+	puerto := resp.Mensaje
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectar con el fulcrum: %v", err)
+	}
+	defer conn.Close()
+	clienteFulcrum := pb.NewMiServicioClient(conn)
+
+	respFulcrum, err := clienteFulcrum.RenombrarBase(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error al enviar comando RenombrarBase al fulcrum: %v", err)
+	}
+	fulcrum := ""
+	switch puerto {
+	case "localhost:50052":
+		fulcrum = "fulcrum1"
+	case "localhost:50053":
+		fulcrum = "fulcrum2"
+	case "localhost:50054":
+		fulcrum = "fulcrum3"
+	}
+	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
+
 func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nombreBase string, nuevoValor float32) {
 	req := &pb.ActualizarValorRequest{
 		NombreSector: nombreSector,
@@ -50,10 +93,31 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 
 	resp, err := client.ActualizarValor(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Error al enviar comando ActualizarBase: %v", err)
+		log.Fatalf("Error al enviar comando ActualizarValor: %v", err)
 	}
 
-	fmt.Printf("Respuesta del servidor: %s\n", resp.Mensaje)
+	puerto := resp.Mensaje
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectar con el fulcrum: %v", err)
+	}
+	defer conn.Close()
+	clienteFulcrum := pb.NewMiServicioClient(conn)
+
+	respFulcrum, err := clienteFulcrum.ActualizarValor(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error al enviar comando ActualizarValor al fulcrum: %v", err)
+	}
+	fulcrum := ""
+	switch puerto {
+	case "localhost:50052":
+		fulcrum = "fulcrum1"
+	case "localhost:50053":
+		fulcrum = "fulcrum2"
+	case "localhost:50054":
+		fulcrum = "fulcrum3"
+	}
+	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
 func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBase string) {
 	req := &pb.BorrarBaseRequest{
@@ -66,7 +130,28 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 		log.Fatalf("Error al enviar comando BorrarBase: %v", err)
 	}
 
-	fmt.Printf("Respuesta del servidor: %s\n", resp.Mensaje)
+	puerto := resp.Mensaje
+	conn, err := grpc.Dial(puerto, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error al conectar con el fulcrum: %v", err)
+	}
+	defer conn.Close()
+	clienteFulcrum := pb.NewMiServicioClient(conn)
+
+	respFulcrum, err := clienteFulcrum.BorrarBase(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error al enviar comando BorrarBase al fulcrum: %v", err)
+	}
+	fulcrum := ""
+	switch puerto {
+	case "localhost:50052":
+		fulcrum = "fulcrum1"
+	case "localhost:50053":
+		fulcrum = "fulcrum2"
+	case "localhost:50054":
+		fulcrum = "fulcrum3"
+	}
+	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
 
 func main() {

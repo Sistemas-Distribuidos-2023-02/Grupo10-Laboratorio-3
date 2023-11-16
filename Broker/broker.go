@@ -17,82 +17,30 @@ type baseServiceServer struct {
 
 func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
 	puerto := s.RandomFulcrum()
-
-	// Crea una conexión gRPC al servidor Fulcrum
-	conn, err := grpc.Dial(fmt.Sprintf(puerto), grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-	clienteFulcrum := pb.NewMiServicioClient(conn)
-
-	// Envia la solicitud AgregarBase a Fulcrum
-	respuestaFulcrum, err := clienteFulcrum.AgregarBase(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Respuesta del fulcrum:%s %s\n", puerto, respuestaFulcrum.Mensaje)
-	return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
+	respuesta := &pb.Respuesta{Mensaje: puerto, Exitoso: true}
+	fmt.Printf("Solicitud de AgregarBase recibida, Se envían los datos del puerto %s", puerto)
+	return respuesta, nil
 }
 
 func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.RenombrarBaseRequest) (*pb.Respuesta, error) {
 	puerto := s.RandomFulcrum()
-
-	// Crea una conexión gRPC al servidor Fulcrum
-	conn, err := grpc.Dial(fmt.Sprintf(puerto), grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-	clienteFulcrum := pb.NewMiServicioClient(conn)
-
-	// Envia la solicitud RenombrarBase a Fulcrum
-	respuestaFulcrum, err := clienteFulcrum.RenombrarBase(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Respuesta del fulcrum:%s %s\n", puerto, respuestaFulcrum.Mensaje)
-	return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
+	respuesta := &pb.Respuesta{Mensaje: puerto, Exitoso: true}
+	fmt.Printf("Solicitud de RenombrarBase recibida, Se envían los datos del puerto %s", puerto)
+	return respuesta, nil
 }
 
 func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.ActualizarValorRequest) (*pb.Respuesta, error) {
 	puerto := s.RandomFulcrum()
-
-	// Crea una conexión gRPC al servidor Fulcrum
-	conn, err := grpc.Dial(fmt.Sprintf(puerto), grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-	clienteFulcrum := pb.NewMiServicioClient(conn)
-
-	// Envia la solicitud ActualizarValor a Fulcrum
-	respuestaFulcrum, err := clienteFulcrum.ActualizarValor(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Respuesta del fulcrum:%s %s\n", puerto, respuestaFulcrum.Mensaje)
-	return &pb.Respuesta{Mensaje: "Comando ActualizarValor ejecutado", Exitoso: true}, nil
+	respuesta := &pb.Respuesta{Mensaje: puerto, Exitoso: true}
+	fmt.Printf("Solicitud de ActualizarValor recibida, Se envían los datos del puerto %s", puerto)
+	return respuesta, nil
 }
 
 func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRequest) (*pb.Respuesta, error) {
 	puerto := s.RandomFulcrum()
-
-	// Crea una conexión gRPC al servidor Fulcrum
-	conn, err := grpc.Dial(fmt.Sprintf(puerto), grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-	clienteFulcrum := pb.NewMiServicioClient(conn)
-
-	// Envia la solicitud BorrarBase a Fulcrum
-	respuestaFulcrum, err := clienteFulcrum.BorrarBase(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("Respuesta del fulcrum:%s %s\n", puerto, respuestaFulcrum.Mensaje)
-	return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
+	respuesta := &pb.Respuesta{Mensaje: puerto, Exitoso: true}
+	fmt.Printf("Solicitud de BorrarBase recibida, Se envían los datos del puerto %s", puerto)
+	return respuesta, nil
 }
 
 func (s *baseServiceServer) RandomFulcrum() string {
