@@ -93,7 +93,7 @@ func main() {
 
 		// Ejemplo de parsing (puede necesitar ser modificado según tus necesidades):
 		var comando, nombreSector, nombreBase string
-		var valor float32
+		var valor interface{}
 		n, _ := fmt.Sscanf(entrada, "%s %s %s %v", &comando, &nombreSector, &nombreBase, &valor)
 		if n >= 3 {
 			switch comando {
