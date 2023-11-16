@@ -9,7 +9,7 @@ service MiServicio {
     rpc RenombrarBase (RenombrarBaseRequest) returns (Respuesta);
     rpc ActualizarValor (ActualizarValorRequest) returns (Respuesta);
     rpc BorrarBase (BorrarBaseRequest) returns (Respuesta);
-    rpc GetSoldados (GetSoldadosRequest) returns (GetSoldadosResponse);
+    rpc GetSoldados (GetSoldadosRequest) returns (Respuesta);
 }
   
 message AgregarBaseRequest {
@@ -43,10 +43,4 @@ message Respuesta {
 message GetSoldadosRequest {
     string nombre_sector = 1;
     string nombre_base = 2;
-}
-
-message GetSoldadosResponse {
-    int32 cantidad_soldados = 1;
-    // Añade cualquier otro campo necesario, como el reloj vectorial
-    // por ejemplo: map<string, int32> reloj_vectorial = 2;
 }

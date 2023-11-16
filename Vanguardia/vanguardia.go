@@ -1,55 +1,63 @@
 package main
 
 import (
+	"bufio"
 	pb "central/github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3"
 	"context"
 	"fmt"
 	"log"
-	"net"
+	"os"
 
 	"google.golang.org/grpc"
 )
 
-type vanguardiaServiceServer struct {
+type baseServiceServer struct {
 	pb.UnimplementedMiServicioServer
-	brokerClient pb.MiServicioClient
 }
 
-func NewVanguardiaServiceServer(brokerClient pb.MiServicioClient) *vanguardiaServiceServer {
-	return &vanguardiaServiceServer{
-		brokerClient: brokerClient,
+func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBase string) {
+	req := &pb.GetSoldadosRequest{
+		NombreSector: nombreSector,
+		NombreBase:   nombreBase,
 	}
-}
 
-func (s *vanguardiaServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldadosRequest) (*pb.GetSoldadosResponse, error) {
-	//Implementar petición a broker y que este le pida a fulcrums los soldados del sector
-	return nil, nil
+	resp, err := client.GetSoldados(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error al enviar comando GetSoldados: %v", err)
+	}
+
+	fmt.Printf("Respuesta del servidor: %s\n", resp.Mensaje)
 }
 
 func main() {
-	// Configurar la conexión con el servidor Broker
-	connBroker, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Error al conectar al servidor Broker: %v", err)
+		log.Fatalf("Error al conectar al servidor gRPC: %v", err)
 	}
-	defer connBroker.Close()
+	defer conn.Close()
 
-	// Crear el cliente para comunicarse con el servidor Broker
-	brokerClient := pb.NewMiServicioClient(connBroker)
+	client := pb.NewMiServicioClient(conn)
 
-	// Configurar el servidor de Vanguardia
-	listener, err := net.Listen("tcp", ":50052")
-	if err != nil {
-		log.Fatalf("Error al escuchar: %v", err)
+	fmt.Println("Ingrese un comando:")
+	fmt.Println(" - GetSoldados: GetSoldados <nombre_sector> <nombre_base>")
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		entrada := scanner.Text()
+		var comando, nombreSector, nombreBase string
+		n, _ := fmt.Sscanf(entrada, "%s %s %s %s", &comando, &nombreSector, &nombreBase)
+		if n >= 3 {
+			switch comando {
+			case "GetSoldados":
+				enviarComandoGetSoldados(client, nombreSector, nombreBase)
+			default:
+				fmt.Println("Comando no reconocido")
+			}
+
+		} else {
+			fmt.Println("Entrada no válida")
+		}
 	}
 
-	server := grpc.NewServer()
-	vanguardiaServer := NewVanguardiaServiceServer(brokerClient)
-	pb.RegisterMiServicioServer(server, vanguardiaServer)
-
-	fmt.Println("Servidor de Vanguardia gRPC iniciado en el puerto 50052")
-
-	if err := server.Serve(listener); err != nil {
-		log.Fatalf("Error al servir: %v", err)
-	}
 }

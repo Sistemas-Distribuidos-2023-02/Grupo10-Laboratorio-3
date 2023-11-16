@@ -130,6 +130,38 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 	return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
 }
 
+func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldadosRequest) (*pb.Respuesta, error) {
+	// Nombre del archivo del sector
+	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
+
+	// Leer el contenido del archivo
+	data, err := ioutil.ReadFile(nombreArchivo)
+	if err != nil {
+		return &pb.Respuesta{
+			Mensaje: "Sector no encontrado en Fulcrum 2", Exitoso: false,
+		}, nil
+	}
+
+	// Convertir el contenido del archivo a líneas
+	lineas := strings.Split(string(data), "\n")
+
+	// Buscar la base en las líneas del archivo
+	for _, linea := range lineas {
+		elementos := strings.Fields(linea)
+		if len(elementos) >= 4 && elementos[0] == "Sector" && elementos[1] == req.NombreSector && elementos[2] == req.NombreBase {
+			// Encontramos la base, devolver la cantidad de soldados
+			return &pb.Respuesta{
+				Mensaje: elementos[3], Exitoso: true,
+			}, nil
+		}
+	}
+
+	// La base no fue encontrada
+	return &pb.Respuesta{
+		Mensaje: "Base no encontrada en comando GetSoldados", Exitoso: true,
+	}, nil
+}
+
 func main() {
 	listener, err := net.Listen("tcp", ":50053")
 	if err != nil {

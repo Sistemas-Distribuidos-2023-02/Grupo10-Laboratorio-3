@@ -34,7 +34,7 @@ type MiServicioClient interface {
 	RenombrarBase(ctx context.Context, in *RenombrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error)
 	ActualizarValor(ctx context.Context, in *ActualizarValorRequest, opts ...grpc.CallOption) (*Respuesta, error)
 	BorrarBase(ctx context.Context, in *BorrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error)
-	GetSoldados(ctx context.Context, in *GetSoldadosRequest, opts ...grpc.CallOption) (*GetSoldadosResponse, error)
+	GetSoldados(ctx context.Context, in *GetSoldadosRequest, opts ...grpc.CallOption) (*Respuesta, error)
 }
 
 type miServicioClient struct {
@@ -81,8 +81,8 @@ func (c *miServicioClient) BorrarBase(ctx context.Context, in *BorrarBaseRequest
 	return out, nil
 }
 
-func (c *miServicioClient) GetSoldados(ctx context.Context, in *GetSoldadosRequest, opts ...grpc.CallOption) (*GetSoldadosResponse, error) {
-	out := new(GetSoldadosResponse)
+func (c *miServicioClient) GetSoldados(ctx context.Context, in *GetSoldadosRequest, opts ...grpc.CallOption) (*Respuesta, error) {
+	out := new(Respuesta)
 	err := c.cc.Invoke(ctx, MiServicio_GetSoldados_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ type MiServicioServer interface {
 	RenombrarBase(context.Context, *RenombrarBaseRequest) (*Respuesta, error)
 	ActualizarValor(context.Context, *ActualizarValorRequest) (*Respuesta, error)
 	BorrarBase(context.Context, *BorrarBaseRequest) (*Respuesta, error)
-	GetSoldados(context.Context, *GetSoldadosRequest) (*GetSoldadosResponse, error)
+	GetSoldados(context.Context, *GetSoldadosRequest) (*Respuesta, error)
 	mustEmbedUnimplementedMiServicioServer()
 }
 
@@ -118,7 +118,7 @@ func (UnimplementedMiServicioServer) ActualizarValor(context.Context, *Actualiza
 func (UnimplementedMiServicioServer) BorrarBase(context.Context, *BorrarBaseRequest) (*Respuesta, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BorrarBase not implemented")
 }
-func (UnimplementedMiServicioServer) GetSoldados(context.Context, *GetSoldadosRequest) (*GetSoldadosResponse, error) {
+func (UnimplementedMiServicioServer) GetSoldados(context.Context, *GetSoldadosRequest) (*Respuesta, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSoldados not implemented")
 }
 func (UnimplementedMiServicioServer) mustEmbedUnimplementedMiServicioServer() {}
