@@ -42,7 +42,7 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 	}
 	defer file.Close()
 	// Escribir la información de la base en el archivo
-	_, err = fmt.Fprintf(file, "Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
+	_, err = fmt.Fprintf(file, "Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
 	}
@@ -53,7 +53,8 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
 	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		//Hay que agregar lo de los logs
-		nuevaLinea := fmt.Sprintf("Sector %s %s 0\n", req.NombreSector, req.NuevoNombre)
+		// Crear una nueva línea con el formato deseado
+		nuevaLinea := fmt.Sprintf("Sector %s %s 0", req.NombreSector, req.NuevoNombre)
 
 		// Escribir la nueva línea en el archivo
 		err = ioutil.WriteFile(nombreArchivo, []byte(nuevaLinea), 0644)
@@ -90,26 +91,41 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 }
 
 func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.ActualizarValorRequest) (*pb.Respuesta, error) {
-	nombresector := fmt.Sprintf("Sector%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombresector); os.IsNotExist(err) {
+	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
+	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		//Hay que agregar lo de los logs
-		return &pb.Respuesta{Mensaje: "Comando ActualizaValor ejecutado", Exitoso: true}, nil
+		// Crear una nueva línea con el formato deseado
+		nuevaLinea := fmt.Sprintf("Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.NuevoValor)
+
+		// Escribir la nueva línea en el archivo
+		err = ioutil.WriteFile(nombreArchivo, []byte(nuevaLinea), 0644)
+		if err != nil {
+			fmt.Printf("Error al crear el archivo %s: %v", nombreArchivo, err)
+			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
+		}
+		return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
 	} else {
-		contenido, err := ioutil.ReadFile(nombresector)
+		contenido, err := ioutil.ReadFile(nombreArchivo)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando ActualizaValor no pudo ser ejecutado", Exitoso: false}, err
 		}
+		encontrar := false
 		lineas := strings.Split(string(contenido), "\n")
 		for i, linea := range lineas {
 			if strings.Contains(linea, req.NombreBase) {
-				nuevaLinea := fmt.Sprintf("Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
+				nuevaLinea := fmt.Sprintf("Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.NuevoValor)
 				lineas[i] = nuevaLinea
+				encontrar = true
 				break
 			}
 		}
+		if encontrar == false {
+			nuevalinea := fmt.Sprintf("Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.NuevoValor)
+			lineas = append(lineas, nuevalinea)
+		}
 		nuevoContenido := strings.Join(lineas, "\n")
 
-		err = ioutil.WriteFile(nombresector, []byte(nuevoContenido), 0644)
+		err = ioutil.WriteFile(nombreArchivo, []byte(nuevoContenido), 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando ActualizaValor no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -152,7 +168,7 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 	data, err := ioutil.ReadFile(nombreArchivo)
 	if err != nil {
 		return &pb.Respuesta{
-			Mensaje: "Sector no encontrado en Fulcrum 3", Exitoso: false,
+			Mensaje: "Sector no encontrado en Fulcrum 1", Exitoso: false,
 		}, nil
 	}
 
