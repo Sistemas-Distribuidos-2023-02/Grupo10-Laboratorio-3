@@ -50,24 +50,38 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 }
 
 func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.RenombrarBaseRequest) (*pb.Respuesta, error) {
-	nombresector := fmt.Sprintf("Sector%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombresector); os.IsNotExist(err) {
+	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
+	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		//Hay que agregar lo de los logs
+		nuevaLinea := fmt.Sprintf("Sector %s %s 0\n", req.NombreSector, req.NuevoNombre)
+
+		// Escribir la nueva línea en el archivo
+		err = ioutil.WriteFile(nombreArchivo, []byte(nuevaLinea), 0644)
+		if err != nil {
+			fmt.Printf("Error al crear el archivo %s: %v\n", nombreArchivo, err)
+			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
+		}
 		return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
 	} else {
-		contenido, err := ioutil.ReadFile(nombresector)
+		contenido, err := ioutil.ReadFile(nombreArchivo)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
 		lineas := strings.Split(string(contenido), "\n")
+		encontrar := false
 		for i, linea := range lineas {
 			if strings.Contains(linea, req.NombreBase) {
 				lineas[i] = strings.Replace(linea, req.NombreBase, req.NuevoNombre, -1)
+				encontrar = true
 				break
 			}
 		}
+		if encontrar == false {
+			nuevalinea := fmt.Sprintf("Sector %s %s 0", req.NombreSector, req.NuevoNombre)
+			lineas = append(lineas, nuevalinea)
+		}
 		nuevoContenido := strings.Join(lineas, "\n")
-		err = ioutil.WriteFile(nombresector, []byte(nuevoContenido), 0644)
+		err = ioutil.WriteFile(nombreArchivo, []byte(nuevoContenido), 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
