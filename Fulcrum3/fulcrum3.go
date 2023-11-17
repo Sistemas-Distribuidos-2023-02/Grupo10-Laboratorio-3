@@ -33,18 +33,36 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		// El archivo no existe, entonces se crea uno nuevo
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
-			return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
+			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo ser creado", Exitoso: false}, err
 		}
 	}
 	file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
+		return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 	}
 	defer file.Close()
+
+	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
+		// El log no existe, entonces se crea uno
+		if err := s.CrearRegistro("Registro.txt"); err != nil {
+			return &pb.Respuesta{Mensaje: "Log de registro no pudo ser creado", Exitoso: false}, err
+		}
+	}
+	logfile, err := os.OpenFile("Registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
+	}
+	defer logfile.Close()
+
 	// Escribir la información de la base en el archivo
 	_, err = fmt.Fprintf(file, "Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
 	if err != nil {
-		return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
+		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
+	}
+	// Escribir la información de la base en el log
+	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
 	return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
 }
@@ -86,6 +104,22 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
+	}
+	// Escribir la información de la base en el log
+	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
+		// El log no existe, entonces se crea uno
+		if err := s.CrearRegistro("Registro.txt"); err != nil {
+			return &pb.Respuesta{Mensaje: "Log de registro no pudo ser creado", Exitoso: false}, err
+		}
+	}
+	logfile, err := os.OpenFile("Registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
+	}
+	defer logfile.Close()
+	_, err = fmt.Fprintf(logfile, "RenombrarBase Sector %s %s %s", req.NombreSector, req.NombreBase, req.NuevoNombre)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
 	return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
 }
@@ -130,6 +164,22 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 			return &pb.Respuesta{Mensaje: "Comando ActualizaValor no pudo ser ejecutado", Exitoso: false}, err
 		}
 	}
+	// Escribir la información de la base en el log
+	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
+		// El log no existe, entonces se crea uno
+		if err := s.CrearRegistro("Registro.txt"); err != nil {
+			return &pb.Respuesta{Mensaje: "Log de registro no pudo ser creado", Exitoso: false}, err
+		}
+	}
+	logfile, err := os.OpenFile("Registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
+	}
+	defer logfile.Close()
+	_, err = fmt.Fprintf(logfile, "ActualizaValor Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.NuevoValor)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
+	}
 	return &pb.Respuesta{Mensaje: "Comando ActualizaValor ejecutado", Exitoso: true}, nil
 }
 
@@ -165,6 +215,22 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando BorrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
+	}
+	// Escribir la información de la base en el log
+	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
+		// El log no existe, entonces se crea uno
+		if err := s.CrearRegistro("Registro.txt"); err != nil {
+			return &pb.Respuesta{Mensaje: "Log de registro no pudo ser creado", Exitoso: false}, err
+		}
+	}
+	logfile, err := os.OpenFile("Registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
+	}
+	defer logfile.Close()
+	_, err = fmt.Fprintf(logfile, "BorrarBase Sector %s %s", req.NombreSector, req.NombreBase)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
 	return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
 }
