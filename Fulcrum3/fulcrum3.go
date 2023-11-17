@@ -60,7 +60,7 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 	}
 	// Escribir la información de la base en el log
-	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
+	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -80,7 +80,6 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 			fmt.Printf("Error al crear el archivo %s: %v\n", nombreArchivo, err)
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
-		return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
 	} else {
 		contenido, err := ioutil.ReadFile(nombreArchivo)
 		if err != nil {
@@ -117,7 +116,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
 	}
 	defer logfile.Close()
-	_, err = fmt.Fprintf(logfile, "RenombrarBase Sector %s %s %s", req.NombreSector, req.NombreBase, req.NuevoNombre)
+	_, err = fmt.Fprintf(logfile, "RenombrarBase Sector %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -137,7 +136,6 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 			fmt.Printf("Error al crear el archivo %s: %v", nombreArchivo, err)
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
-		return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
 	} else {
 		contenido, err := ioutil.ReadFile(nombreArchivo)
 		if err != nil {
@@ -176,7 +174,7 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
 	}
 	defer logfile.Close()
-	_, err = fmt.Fprintf(logfile, "ActualizaValor Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.NuevoValor)
+	_, err = fmt.Fprintf(logfile, "ActualizaValor Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -191,7 +189,6 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 			return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
 		// Hay que implementar logs aquí
-		return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
 	} else {
 		contenido, err := ioutil.ReadFile(nombreArchivo)
 		if err != nil {
@@ -228,7 +225,7 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
 	}
 	defer logfile.Close()
-	_, err = fmt.Fprintf(logfile, "BorrarBase Sector %s %s", req.NombreSector, req.NombreBase)
+	_, err = fmt.Fprintf(logfile, "BorrarBase Sector %s %s\n", req.NombreSector, req.NombreBase)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
