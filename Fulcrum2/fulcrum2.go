@@ -29,14 +29,14 @@ func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 }
 
 func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
-	nombresector := fmt.Sprintf("Sector%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombresector); os.IsNotExist(err) {
+	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
+	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		// El archivo no existe, entonces se crea uno nuevo
-		if err := s.CrearRegistro(nombresector); err != nil {
+		if err := s.CrearRegistro(nombreArchivo); err != nil {
 			return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
 	}
-	file, err := os.OpenFile(nombresector, os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
 	}
@@ -134,25 +134,34 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 }
 
 func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRequest) (*pb.Respuesta, error) {
-	nombresector := fmt.Sprintf("Sector%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombresector); os.IsNotExist(err) {
-		//Hay que agregar lo de los logs
+	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
+	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
+		// El archivo no existe, entonces se crea uno nuevo
+		if err := s.CrearRegistro(nombreArchivo); err != nil {
+			return &pb.Respuesta{Mensaje: "Comando AgregarBase no pudo ser ejecutado", Exitoso: false}, err
+		}
+		// Hay que implementar logs aquí
 		return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
 	} else {
-		contenido, err := ioutil.ReadFile(nombresector)
+		contenido, err := ioutil.ReadFile(nombreArchivo)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando BorrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
 		lineas := strings.Split(string(contenido), "\n")
 		var nuevasLineas []string
+		encontrar := false
 		for _, linea := range lineas {
 			if !strings.Contains(linea, req.NombreBase) {
 				nuevasLineas = append(nuevasLineas, linea)
+				encontrar = true
 			}
+		}
+		if encontrar == false {
+			//implementar código de registro
 		}
 		nuevoContenido := strings.Join(nuevasLineas, "\n")
 
-		err = ioutil.WriteFile(nombresector, []byte(nuevoContenido), 0644)
+		err = ioutil.WriteFile(nombreArchivo, []byte(nuevoContenido), 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando BorrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -191,6 +200,7 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 		Mensaje: "Base no encontrada en comando GetSoldados", Exitoso: true,
 	}, nil
 }
+
 func main() {
 	listener, err := net.Listen("tcp", ":50053")
 	if err != nil {
