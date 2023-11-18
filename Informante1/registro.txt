@@ -1,0 +1,4 @@
+AgregarBase Sector Peru Lima 235
+RenombrarBase Sector Peru Lima Cuzco
+ActualizarValor Sector Peru Cuzco 14
+BorrarBase Sector Peru Cuzco

@@ -49,6 +49,11 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	if err != nil {
 		log.Fatalf("Error al enviar comando AgregarBase al fulcrum: %v", err)
 	}
+	// ASEGURA EL MODELO READ YOUR WRITES
+	if respFulcrum.Exitoso == false {
+		fmt.Printf("Sucedió un error al momento de ejecutar el comando AgregarBase")
+		return
+	}
 	fulcrum := asignarNombreFulcrum(puerto)
 	if PrimeraEscritura == true {
 		err := inicializarArchivo()
@@ -94,6 +99,11 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	respFulcrum, err := clienteFulcrum.RenombrarBase(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error al enviar comando RenombrarBase al fulcrum: %v", err)
+	}
+	// ASEGURA EL MODELO READ YOUR WRITES
+	if respFulcrum.Exitoso == false {
+		fmt.Printf("Sucedió un error al momento de ejecutar el comando AgregarBase")
+		return
 	}
 	fulcrum := asignarNombreFulcrum(puerto)
 	if PrimeraEscritura {
@@ -141,6 +151,11 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	if err != nil {
 		log.Fatalf("Error al enviar comando ActualizarValor al fulcrum: %v", err)
 	}
+	// ASEGURA EL MODELO READ YOUR WRITES
+	if respFulcrum.Exitoso == false {
+		fmt.Printf("Sucedió un error al momento de ejecutar el comando AgregarBase")
+		return
+	}
 	fulcrum := asignarNombreFulcrum(puerto)
 	if PrimeraEscritura {
 		err := inicializarArchivo()
@@ -184,6 +199,11 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	respFulcrum, err := clienteFulcrum.BorrarBase(context.Background(), req)
 	if err != nil {
 		log.Fatalf("Error al enviar comando BorrarBase al fulcrum: %v", err)
+	}
+	// ASEGURA EL MODELO READ YOUR WRITES
+	if respFulcrum.Exitoso == false {
+		fmt.Printf("Sucedió un error al momento de ejecutar el comando AgregarBase")
+		return
 	}
 	fulcrum := asignarNombreFulcrum(puerto)
 	if PrimeraEscritura {
