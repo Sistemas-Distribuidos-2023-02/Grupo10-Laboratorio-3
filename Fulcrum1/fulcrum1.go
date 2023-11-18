@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	pb "central/github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3" // Asegúrate de ajustar la importación correctamente
 	"context"
 	"fmt"
@@ -17,6 +18,43 @@ type baseServiceServer struct {
 	pb.UnimplementedMiServicioServer
 }
 
+func editarReloj(nombreArchivo, nuevoContenido string) error {
+	// Abrir el archivo en modo lectura y escritura
+	file, err := os.OpenFile(nombreArchivo, os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Crear un scanner para leer el archivo línea por línea
+	scanner := bufio.NewScanner(file)
+
+	// Leer la primera línea
+	if scanner.Scan() {
+		// Obtener el texto de la primera línea
+		primeraLinea := scanner.Text()
+
+		// Volver al inicio del archivo
+		_, err := file.Seek(0, 0)
+		if err != nil {
+			return err
+		}
+
+		// Escribir el nuevo contenido en lugar de la primera línea
+		_, err = fmt.Fprintln(file, nuevoContenido)
+		if err != nil {
+			return err
+		}
+
+		// Escribir el resto del archivo después de la nueva línea
+		_, err = fmt.Fprintln(file, primeraLinea)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // CrearRegistro crea un nuevo archivo de registro para el sector
 func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 	// Lógica para crear un nuevo archivo de registro para el sector
@@ -30,6 +68,7 @@ func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 
 func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
 	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
+	var n int
 	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		// El archivo no existe, entonces se crea uno nuevo
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
@@ -41,20 +80,43 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		}
 		defer file.Close()
 
+		n = 1
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[1,0,0]\n")
+		_, err = fmt.Fprintf(file, "[%d,0,0]\n", n)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
+		// Escribir la información de la base en el archivo
+		_, err = fmt.Fprintf(file, "Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
+		if err != nil {
+			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
+		}
+		return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
 	}
+	// Abrir archivo de sector
 	file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 	}
 	defer file.Close()
 
+	n += 1
+	nuevoContenido := fmt.Sprintf("[%d,0,0]", n)
+	err = editarReloj(nombreArchivo, nuevoContenido)
+	if err != nil {
+		fmt.Println("Error al editar la primera línea:", err)
+	} else {
+		fmt.Println("Primera línea editada con éxito.")
+	}
+
+	// Escribir la información de la base en el archivo
+	_, err = fmt.Fprintf(file, "Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
+	}
+
+	// Creación de log en caso de no existir
 	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
-		// El log no existe, entonces se crea uno
 		if err := s.CrearRegistro("Registro.txt"); err != nil {
 			return &pb.Respuesta{Mensaje: "Log de registro no pudo ser creado", Exitoso: false}, err
 		}
@@ -65,11 +127,6 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 	}
 	defer logfile.Close()
 
-	// Escribir la información de la base en el archivo
-	_, err = fmt.Fprintf(file, "Sector %s %s %.0f", req.NombreSector, req.NombreBase, req.Valor)
-	if err != nil {
-		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
-	}
 	// Escribir la información de la base en el log
 	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
 	if err != nil {
