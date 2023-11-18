@@ -12,6 +12,19 @@ import (
 	"google.golang.org/grpc"
 )
 
+var PrimeraEscritura = true
+
+func inicializarArchivo() error {
+	// Reinicia el contenido del archivo registro
+	file, err := os.OpenFile("registro.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Printf("Error al abrir el archivo DATA.txt: %v", err)
+		return err
+	}
+	defer file.Close()
+	return nil
+}
+
 func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBase string, valor float32) {
 	req := &pb.AgregarBaseRequest{
 		NombreSector: nombreSector,
@@ -36,14 +49,24 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	if err != nil {
 		log.Fatalf("Error al enviar comando AgregarBase al fulcrum: %v", err)
 	}
-	fulcrum := ""
-	switch puerto {
-	case "localhost:50052":
-		fulcrum = "fulcrum1"
-	case "localhost:50053":
-		fulcrum = "fulcrum2"
-	case "localhost:50054":
-		fulcrum = "fulcrum3"
+	fulcrum := asignarNombreFulcrum(puerto)
+	if PrimeraEscritura {
+		err := inicializarArchivo()
+		if err != nil {
+			log.Fatal("Problemas con el archivo registro.txt")
+		}
+		PrimeraEscritura = false
+	}
+	//Escritura en el registro.txt
+	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Log de registro no pudo abrirse exitosamente")
+	}
+	defer logfile.Close()
+
+	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %0f\n", req.NombreSector, req.NombreBase, req.Valor)
+	if err != nil {
+		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
 	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
@@ -72,14 +95,24 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	if err != nil {
 		log.Fatalf("Error al enviar comando RenombrarBase al fulcrum: %v", err)
 	}
-	fulcrum := ""
-	switch puerto {
-	case "localhost:50052":
-		fulcrum = "fulcrum1"
-	case "localhost:50053":
-		fulcrum = "fulcrum2"
-	case "localhost:50054":
-		fulcrum = "fulcrum3"
+	fulcrum := asignarNombreFulcrum(puerto)
+	if PrimeraEscritura {
+		err := inicializarArchivo()
+		if err != nil {
+			log.Fatal("Problemas con el archivo registro.txt")
+		}
+		PrimeraEscritura = false
+	}
+	//Escritura en el registro.txt
+	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Log de registro no pudo abrirse exitosamente")
+	}
+	defer logfile.Close()
+
+	_, err = fmt.Fprintf(logfile, "RenombrarBase Sector %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre)
+	if err != nil {
+		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
 	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
@@ -108,14 +141,24 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	if err != nil {
 		log.Fatalf("Error al enviar comando ActualizarValor al fulcrum: %v", err)
 	}
-	fulcrum := ""
-	switch puerto {
-	case "localhost:50052":
-		fulcrum = "fulcrum1"
-	case "localhost:50053":
-		fulcrum = "fulcrum2"
-	case "localhost:50054":
-		fulcrum = "fulcrum3"
+	fulcrum := asignarNombreFulcrum(puerto)
+	if PrimeraEscritura {
+		err := inicializarArchivo()
+		if err != nil {
+			log.Fatal("Problemas con el archivo registro.txt")
+		}
+		PrimeraEscritura = false
+	}
+	//Escritura en el registro.txt
+	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Log de registro no pudo abrirse exitosamente")
+	}
+	defer logfile.Close()
+
+	_, err = fmt.Fprintf(logfile, "ActualizarValor Sector %s %s %0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
+	if err != nil {
+		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
 	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
 }
@@ -142,7 +185,31 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	if err != nil {
 		log.Fatalf("Error al enviar comando BorrarBase al fulcrum: %v", err)
 	}
-	fulcrum := ""
+	fulcrum := asignarNombreFulcrum(puerto)
+	if PrimeraEscritura {
+		err := inicializarArchivo()
+		if err != nil {
+			log.Fatal("Problemas con el archivo registro.txt")
+		}
+		PrimeraEscritura = false
+	}
+	//Escritura en el registro.txt
+	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Log de registro no pudo abrirse exitosamente")
+	}
+	defer logfile.Close()
+
+	_, err = fmt.Fprintf(logfile, "BorrarBase Sector %s %s\n", req.NombreSector, req.NombreBase)
+	if err != nil {
+		fmt.Printf("No pudo escribirse correctamente en archivo log")
+	}
+	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
+}
+
+func asignarNombreFulcrum(puerto string) string {
+	var fulcrum string
+
 	switch puerto {
 	case "localhost:50052":
 		fulcrum = "fulcrum1"
@@ -151,7 +218,8 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	case "localhost:50054":
 		fulcrum = "fulcrum3"
 	}
-	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
+
+	return fulcrum
 }
 
 func main() {
