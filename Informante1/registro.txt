@@ -1,12 +1,39 @@
-AgregarBase Sector Peru Jara 15
-AgregarBase Sector Peru Depo 14
-AgregarBase Sector Peru Dante 123
-AgregarBase Sector Peru Gaete 123
-AgregarBase Sector Peru Moyano 123
-AgregarBase Sector Peru ALV 2
-AgregarBase Sector Peru Gaete 123
-AgregarBase Sector Peru Gaete 123
-AgregarBase Sector Peru Gaete 123
-AgregarBase Sector Peru Gaete 123
-AgregarBase Sector Peru Gaete 123
-AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Lima Peru 100
+RenombrarBase Sector Peru Lima Cuzco
+AgregarBase Sector Peru Lima 100
+RenombrarBase Sector Peru Lima Cuzco
+ActualizarValor Sector Peru Cuzco 14
+BorrarBase Sector Peru Cuzco
+AgregarBase Sector Peru Lima 104
+AgregarBase Sector Peru JARA 14
+AgregarBase Sector Peru CasaJara 14
+RenombrarBase Sector Peru CasaJara Lima
+AgregarBase Sector Peru Cuzco 123
+ActualizarValor Sector Peru Lima 15
+BorrarBase Sector Peru Cuzco
+AgregarBase Sector Bolivia LaPaz 15
+RenombrarBase Sector Bolivia ThePeace 
+RenombrarBase Sector Bolivia LaPaz ThePeace
+AgregarBase Sector Peru Lima 125
+RenombrarBase Sector Peru Lima Burba
+ActualizarValor Sector Peru Lima 1245
+BorrarBase Sector Peru Lima
+AgregarBase Sector Peru ASJDLAJDIWJA 14
+AgregarBase Sector Peru Lima 124
+AgregarBase Sector Lima Peru 123
+AgregarBase Sector Lima Cuzco 14
+RenombrarBase Sector Peru Lima Payolandia
+RenombrarBase Sector Peru Lima Payolandia
+ActualizarValor Sector Peru Payolandia 145
+AgregarBase Sector Peru Jara 213
+RenombrarBase Sector Peru Jara Aliro
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
+BorrarBase Sector Peru Cuzco
