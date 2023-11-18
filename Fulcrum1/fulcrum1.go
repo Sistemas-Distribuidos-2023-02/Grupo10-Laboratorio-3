@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	pb "central/github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3" // Asegúrate de ajustar la importación correctamente
 	"context"
 	"fmt"
@@ -19,35 +18,31 @@ type baseServiceServer struct {
 }
 
 func editarReloj(nombreArchivo, nuevoContenido string) error {
-	// Abrir el archivo en modo lectura y escritura
-	file, err := os.OpenFile(nombreArchivo, os.O_RDWR, 0644)
+	// Leer el contenido actual del archivo
+	contenidos, err := ioutil.ReadFile(nombreArchivo)
+	if err != nil {
+		return err
+	}
+
+	// Separar el contenido por líneas
+	lineas := strings.Split(string(contenidos), "\n")
+
+	// Abrir el archivo en modo escritura, truncándolo para eliminar el contenido original
+	file, err := os.OpenFile(nombreArchivo, os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	// Crear un scanner para leer el archivo línea por línea
-	scanner := bufio.NewScanner(file)
+	// Escribir el nuevo contenido en el archivo (primera línea)
+	_, err = fmt.Fprintln(file, nuevoContenido)
+	if err != nil {
+		return err
+	}
 
-	// Leer la primera línea
-	if scanner.Scan() {
-		// Obtener el texto de la primera línea
-		primeraLinea := scanner.Text()
-
-		// Volver al inicio del archivo
-		_, err := file.Seek(0, 0)
-		if err != nil {
-			return err
-		}
-
-		// Escribir el nuevo contenido en lugar de la primera línea
-		_, err = fmt.Fprintln(file, nuevoContenido)
-		if err != nil {
-			return err
-		}
-
-		// Escribir el resto del archivo después de la nueva línea
-		_, err = fmt.Fprintln(file, primeraLinea)
+	// Escribir el resto del contenido original después de la nueva línea
+	for i := 1; i < len(lineas); i++ {
+		_, err := fmt.Fprintln(file, lineas[i])
 		if err != nil {
 			return err
 		}
@@ -66,9 +61,10 @@ func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 	return nil
 }
 
+var n int
+
 func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
 	nombreArchivo := fmt.Sprintf("Sector%s.txt", req.NombreSector)
-	var n int
 	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
 		// El archivo no existe, entonces se crea uno nuevo
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
@@ -117,13 +113,11 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 	defer file.Close()
 
 	n += 1
-	print(n)
 	nuevoContenido := fmt.Sprintf("[%d,0,0]", n)
 	err = editarReloj(nombreArchivo, nuevoContenido)
 	if err != nil {
-		fmt.Println("Error al editar la primera línea:", err)
+		fmt.Println("Error al editar reloj", err)
 	} else {
-		fmt.Println("Primera línea editada con éxito.")
 	}
 
 	// Escribir la información de la base en el archivo
@@ -173,7 +167,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 				break
 			}
 		}
-		if encontrar == false {
+		if encontrar == false { //No se encontró la base en el sector
 			nuevalinea := fmt.Sprintf("Sector %s %s 0", req.NombreSector, req.NuevoNombre)
 			lineas = append(lineas, nuevalinea)
 		}

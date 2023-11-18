@@ -1,4 +1,12 @@
-AgregarBase Sector Peru Lima 235
-RenombrarBase Sector Peru Lima Cuzco
-ActualizarValor Sector Peru Cuzco 14
-BorrarBase Sector Peru Cuzco
+AgregarBase Sector Peru Jara 15
+AgregarBase Sector Peru Depo 14
+AgregarBase Sector Peru Dante 123
+AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Peru Moyano 123
+AgregarBase Sector Peru ALV 2
+AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Peru Gaete 123
+AgregarBase Sector Peru Gaete 123
