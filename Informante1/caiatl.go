@@ -16,7 +16,7 @@ var PrimeraEscritura = true
 
 func inicializarArchivo() error {
 	// Reinicia el contenido del archivo registro
-	file, err := os.OpenFile("registro.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("Registro.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("Error al abrir el archivo DATA.txt: %v", err)
 		return err

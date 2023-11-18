@@ -71,7 +71,7 @@ func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 	return nil
 }
 
-func (s *baseServiceServer) AgregarLOG(info, base, sector, nuevonombre string, valor, nuevovalor float32) (*pb.Respuesta, error) {
+func (s *baseServiceServer) AgregarLOG(info, sector, base, nuevonombre string, valor, nuevovalor float32) (*pb.Respuesta, error) {
 	// Creación del log en caso de no existir
 	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
 		if err := s.CrearRegistro("Registro.txt"); err != nil {
@@ -86,22 +86,22 @@ func (s *baseServiceServer) AgregarLOG(info, base, sector, nuevonombre string, v
 
 	switch info { // Escribir la información de la base en el log
 	case "agregar":
-		_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f\n", base, sector, valor)
+		_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f\n", sector, base, valor)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
 	case "renombrar":
-		_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s\n", base, sector, nuevonombre)
+		_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s\n", sector, base, nuevonombre)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
 	case "actualizar":
-		_, err = fmt.Fprintf(logfile, "ActualizarBase %s %s %.0f\n", base, sector, nuevovalor)
+		_, err = fmt.Fprintf(logfile, "ActualizarBase %s %s %.0f\n", sector, base, nuevovalor)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
 	case "borrar":
-		_, err = fmt.Fprintf(logfile, "BorrarBase %s %s \n", base, sector)
+		_, err = fmt.Fprintf(logfile, "BorrarBase %s %s \n", sector, base)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
@@ -135,7 +135,7 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
 		// función para manipular el log
-		_, err = s.AgregarLOG("agregar", req.NombreBase, req.NombreSector, "", req.Valor, 0)
+		_, err = s.AgregarLOG("agregar", req.NombreSector, req.NombreBase, "", req.Valor, 0)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
@@ -229,7 +229,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 		}
 	}
 	// función para manipular el registro
-	_, err := s.AgregarLOG("renombrar", req.NombreBase, req.NombreSector, req.NuevoNombre, 0, 0)
+	_, err := s.AgregarLOG("renombrar", req.NombreSector, req.NombreBase, req.NuevoNombre, 0, 0)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -293,7 +293,7 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 		}
 	}
 	// función para manipular el log
-	_, err := s.AgregarLOG("actualizar", req.NombreBase, req.NombreSector, "", 0, req.NuevoValor)
+	_, err := s.AgregarLOG("actualizar", req.NombreSector, req.NombreBase, "", 0, req.NuevoValor)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -348,7 +348,7 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 		}
 	}
 	// función para manipular el log
-	_, err := s.AgregarLOG("borrar", req.NombreBase, req.NombreSector, "", 0, 0)
+	_, err := s.AgregarLOG("borrar", req.NombreSector, req.NombreBase, "", 0, 0)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
