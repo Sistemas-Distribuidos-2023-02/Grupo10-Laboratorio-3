@@ -35,6 +35,17 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo ser creado", Exitoso: false}, err
 		}
+		file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
+		}
+		defer file.Close()
+
+		// Definir reloj
+		_, err = fmt.Fprintf(file, "[1,0,0]")
+		if err != nil {
+			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
+		}
 	}
 	file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
