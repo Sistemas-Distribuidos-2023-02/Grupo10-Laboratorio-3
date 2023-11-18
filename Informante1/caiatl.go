@@ -50,7 +50,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 		log.Fatalf("Error al enviar comando AgregarBase al fulcrum: %v", err)
 	}
 	fulcrum := asignarNombreFulcrum(puerto)
-	if PrimeraEscritura {
+	if PrimeraEscritura == true {
 		err := inicializarArchivo()
 		if err != nil {
 			log.Fatal("Problemas con el archivo registro.txt")
@@ -64,7 +64,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %0f\n", req.NombreSector, req.NombreBase, req.Valor)
+	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -156,7 +156,7 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "ActualizarValor Sector %s %s %0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
+	_, err = fmt.Fprintf(logfile, "ActualizarValor Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}

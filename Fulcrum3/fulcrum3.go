@@ -42,7 +42,7 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		defer file.Close()
 
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[1,0,0]")
+		_, err = fmt.Fprintf(file, "[1,0,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
