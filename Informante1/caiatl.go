@@ -69,7 +69,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "AgregarBase Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
+	_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -120,7 +120,7 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "RenombrarBase Sector %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre)
+	_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -171,7 +171,7 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "ActualizarValor Sector %s %s %.0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
+	_, err = fmt.Fprintf(logfile, "ActualizarValor %s %s %.0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -220,7 +220,7 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "BorrarBase Sector %s %s\n", req.NombreSector, req.NombreBase)
+	_, err = fmt.Fprintf(logfile, "BorrarBase %s %s\n", req.NombreSector, req.NombreBase)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -253,9 +253,9 @@ func main() {
 
 	fmt.Println("Ingrese un comando:")
 	fmt.Println("Ejemplos:")
-	fmt.Println(" - AgregarBase: AgregarBase nombre_sector nombre_base 42.0")
+	fmt.Println(" - AgregarBase: AgregarBase nombre_sector nombre_base 42")
 	fmt.Println(" - RenombrarBase: RenombrarBase nombre_sector nombre_base nuevo_nombre")
-	fmt.Println(" - ActualizarValor: ActualizarValor nombre_sector nombre_base 43.0")
+	fmt.Println(" - ActualizarValor: ActualizarValor nombre_sector nombre_base 43")
 	fmt.Println(" - BorrarBase: BorrarBase nombre_sector nombre_base")
 
 	scanner := bufio.NewScanner(os.Stdin)
