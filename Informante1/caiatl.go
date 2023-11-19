@@ -62,6 +62,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 		}
 		PrimeraEscritura = false
 	}
+	reloj := respFulcrum.Mensaje
 	//Escritura en el registro.txt
 	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
@@ -69,11 +70,11 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f\n", req.NombreSector, req.NombreBase, req.Valor)
+	_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f %s\n", req.NombreSector, req.NombreBase, req.Valor, reloj)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
+	fmt.Printf("Respuesta del %s: Comando AgregarBase Ejecutado con éxito\n", fulcrum)
 }
 
 func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombreBase string, valor interface{}) {
@@ -113,6 +114,7 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 		}
 		PrimeraEscritura = false
 	}
+	reloj := respFulcrum.Mensaje
 	//Escritura en el registro.txt
 	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
@@ -120,11 +122,11 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre)
+	_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre, reloj)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
+	fmt.Printf("Respuesta del %s: Comando RenombrarBase Ejecutado con éxito\n", fulcrum)
 }
 
 func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nombreBase string, nuevoValor float32) {
@@ -165,17 +167,18 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 		PrimeraEscritura = false
 	}
 	//Escritura en el registro.txt
+	reloj := respFulcrum.Mensaje
 	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Log de registro no pudo abrirse exitosamente")
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "ActualizarValor %s %s %.0f\n", req.NombreSector, req.NombreBase, req.NuevoValor)
+	_, err = fmt.Fprintf(logfile, "ActualizarValor %s %s %.0f %s\n", req.NombreSector, req.NombreBase, req.NuevoValor, reloj)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
+	fmt.Printf("Respuesta del %s: Comando ActualizarValor Ejecutado con éxito\n", fulcrum)
 }
 func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBase string) {
 	req := &pb.BorrarBaseRequest{
@@ -214,17 +217,18 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 		PrimeraEscritura = false
 	}
 	//Escritura en el registro.txt
+	reloj := respFulcrum.Mensaje
 	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Log de registro no pudo abrirse exitosamente")
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "BorrarBase %s %s\n", req.NombreSector, req.NombreBase)
+	_, err = fmt.Fprintf(logfile, "BorrarBase %s %s %s\n", req.NombreSector, req.NombreBase, reloj)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: %s\n", fulcrum, respFulcrum.Mensaje)
+	fmt.Printf("Respuesta del %s: Comando BorrarBase Ejecutado con éxito\n", fulcrum)
 }
 
 func asignarNombreFulcrum(puerto string) string {

@@ -89,7 +89,7 @@ func main() {
 	server := grpc.NewServer()
 	pb.RegisterMiServicioServer(server, &baseServiceServer{})
 
-	fmt.Println("Servidor gRPC iniciado en el puerto 50051\n")
+	fmt.Println("Servidor gRPC iniciado en el puerto 50051")
 
 	if err := server.Serve(listener); err != nil {
 		log.Fatalf("Error al servir: %v", err)

@@ -136,8 +136,6 @@ func (s *baseServiceServer) AgregarLOG(info, sector, base, nuevonombre string, v
 	return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 }
 
-var n int
-
 func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
 	nombreArchivo := fmt.Sprintf("%s.txt", req.NombreSector)
 	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
@@ -150,9 +148,8 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 		}
 		defer file.Close()
-		n = 1
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,%d,0]\n", n)
+		_, err = fmt.Fprintf(file, "[0,1,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
@@ -225,7 +222,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 		defer file.Close()
 
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,%d,0]\n", n)
+		_, err = fmt.Fprintf(file, "[0,1,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
@@ -291,9 +288,8 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 		}
 		defer file.Close()
 
-		n = 1
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,%d,0]\n", n)
+		_, err = fmt.Fprintf(file, "[0,1,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
@@ -362,7 +358,7 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 		defer file.Close()
 
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,%d,0]\n", n)
+		_, err = fmt.Fprintf(file, "[0,1,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
