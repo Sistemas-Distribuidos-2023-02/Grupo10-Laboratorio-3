@@ -1,0 +1,2 @@
+[0,1,0]
+alfa campamento1 20

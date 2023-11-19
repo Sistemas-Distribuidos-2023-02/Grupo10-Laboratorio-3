@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -106,24 +107,28 @@ func (s *baseServiceServer) AgregarLOG(info, sector, base, nuevonombre string, v
 	}
 	defer logfile.Close()
 
+	// Agregar Hora y formatear
+	horaActual := time.Now()
+	horaFormateada := horaActual.Format("15:04:05")
+
 	switch info { // Escribir la información de la base en el log
 	case "agregar":
-		_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f\n", sector, base, valor)
+		_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f [%s]\n", sector, base, valor, horaFormateada)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
 	case "renombrar":
-		_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s\n", sector, base, nuevonombre)
+		_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s [%s]\n", sector, base, nuevonombre, horaFormateada)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
 	case "actualizar":
-		_, err = fmt.Fprintf(logfile, "ActualizarBase %s %s %.0f\n", sector, base, nuevovalor)
+		_, err = fmt.Fprintf(logfile, "ActualizarBase %s %s %.0f [%s]\n", sector, base, nuevovalor, horaFormateada)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
 	case "borrar":
-		_, err = fmt.Fprintf(logfile, "BorrarBase %s %s \n", sector, base)
+		_, err = fmt.Fprintf(logfile, "BorrarBase %s %s [%s] \n", sector, base, horaFormateada)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
