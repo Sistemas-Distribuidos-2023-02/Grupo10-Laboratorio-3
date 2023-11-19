@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	pb "central/github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3" // Asegúrate de ajustar la importación correctamente
 	"context"
 	"fmt"
@@ -16,6 +17,27 @@ import (
 
 type baseServiceServer struct {
 	pb.UnimplementedMiServicioServer
+}
+
+func retornarReloj(nombreArchivo string) (string, error) {
+	archivo, err := os.Open(nombreArchivo)
+	if err != nil {
+		return "", err
+	}
+	defer archivo.Close()
+
+	scanner := bufio.NewScanner(archivo)
+
+	if scanner.Scan() {
+		return scanner.Text(), nil
+	}
+
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	// Si el archivo está vacío
+	return "", fmt.Errorf("El archivo está vacío")
 }
 
 func editarReloj(nombreArchivo string) error {
@@ -139,7 +161,12 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 		}
-		return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
+		// Obtener reloj para retornarlo al informante
+		reloj, err := retornarReloj(nombreArchivo)
+		if err != nil {
+			return &pb.Respuesta{Mensaje: "Error al extraer el reloj", Exitoso: false}, err
+		}
+		return &pb.Respuesta{Mensaje: reloj, Exitoso: true}, nil
 	}
 	// Abrir archivo de sector
 	file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
@@ -170,7 +197,12 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
-	return &pb.Respuesta{Mensaje: "Comando AgregarBase ejecutado", Exitoso: true}, nil
+	// Obtener reloj para retornarlo al informante
+	reloj, err := retornarReloj(nombreArchivo)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Error al extraer el reloj", Exitoso: false}, err
+	}
+	return &pb.Respuesta{Mensaje: reloj, Exitoso: true}, nil
 }
 
 func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.RenombrarBaseRequest) (*pb.Respuesta, error) {
@@ -233,7 +265,12 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
-	return &pb.Respuesta{Mensaje: "Comando RenombrarBase ejecutado", Exitoso: true}, nil
+	// Obtener reloj para retornarlo al informante
+	reloj, err := retornarReloj(nombreArchivo)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Error al extraer el reloj", Exitoso: false}, err
+	}
+	return &pb.Respuesta{Mensaje: reloj, Exitoso: true}, nil
 }
 
 func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.ActualizarValorRequest) (*pb.Respuesta, error) {
@@ -297,7 +334,12 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
-	return &pb.Respuesta{Mensaje: "Comando ActualizarBase ejecutado", Exitoso: true}, nil
+	// Obtener reloj para retornarlo al informante
+	reloj, err := retornarReloj(nombreArchivo)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Error al extraer el reloj", Exitoso: false}, err
+	}
+	return &pb.Respuesta{Mensaje: reloj, Exitoso: true}, nil
 }
 
 func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRequest) (*pb.Respuesta, error) {
@@ -352,7 +394,12 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
-	return &pb.Respuesta{Mensaje: "Comando BorrarBase ejecutado", Exitoso: true}, nil
+	// Obtener reloj para retornarlo al informante
+	reloj, err := retornarReloj(nombreArchivo)
+	if err != nil {
+		return &pb.Respuesta{Mensaje: "Error al extraer el reloj", Exitoso: false}, err
+	}
+	return &pb.Respuesta{Mensaje: reloj, Exitoso: true}, nil
 }
 
 func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldadosRequest) (*pb.Respuesta, error) {

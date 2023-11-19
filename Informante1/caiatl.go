@@ -251,12 +251,11 @@ func main() {
 
 	client := pb.NewMiServicioClient(conn)
 
-	fmt.Println("Ingrese un comando:")
-	fmt.Println("Ejemplos:")
-	fmt.Println(" - AgregarBase: AgregarBase nombre_sector nombre_base 42")
-	fmt.Println(" - RenombrarBase: RenombrarBase nombre_sector nombre_base nuevo_nombre")
-	fmt.Println(" - ActualizarValor: ActualizarValor nombre_sector nombre_base 43")
-	fmt.Println(" - BorrarBase: BorrarBase nombre_sector nombre_base")
+	fmt.Println("Ingrese algun comando:")
+	fmt.Println("-AgregarBase nombre_sector nombre_base valor")
+	fmt.Println("-RenombrarBase nombre_sector nombre_base nuevo_nombre")
+	fmt.Println("-ActualizarValor nombre_sector nombre_base nuevo_valor")
+	fmt.Println("-BorrarBase nombre_sector nombre_base")
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
