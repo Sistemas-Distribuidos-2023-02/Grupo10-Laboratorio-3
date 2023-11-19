@@ -74,7 +74,12 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: Comando AgregarBase Ejecutado con éxito\n", fulcrum)
+	if resp.Exitoso {
+		fmt.Printf("Respuesta del %s: Comando AgregarBase Ejecutado con éxito\n", fulcrum)
+	} else {
+		fmt.Printf("Respuesta del %s: Comando AgregarBase no pudo ser ejecutado\n", fulcrum)
+	}
+
 }
 
 func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombreBase string, valor interface{}) {
@@ -126,7 +131,12 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: Comando RenombrarBase Ejecutado con éxito\n", fulcrum)
+	if resp.Exitoso {
+		fmt.Printf("Respuesta del %s: Comando RenombrarBase Ejecutado con éxito\n", fulcrum)
+	} else {
+		fmt.Printf("Respuesta del %s: Comando RenombrarBase no pudo ser ejecutado\n", fulcrum)
+	}
+
 }
 
 func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nombreBase string, nuevoValor float32) {
@@ -178,7 +188,12 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: Comando ActualizarValor Ejecutado con éxito\n", fulcrum)
+	if resp.Exitoso {
+		fmt.Printf("Respuesta del %s: Comando ActualizarValor Ejecutado con éxito\n", fulcrum)
+	} else {
+		fmt.Printf("Respuesta del %s: Comando ActualizarValor no pudo ser ejecutado\n", fulcrum)
+	}
+
 }
 func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBase string) {
 	req := &pb.BorrarBaseRequest{
@@ -228,7 +243,11 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
-	fmt.Printf("Respuesta del %s: Comando BorrarBase Ejecutado con éxito\n", fulcrum)
+	if resp.Exitoso {
+		fmt.Printf("Respuesta del %s: Comando BorrarBase Ejecutado con éxito\n", fulcrum)
+	} else {
+		fmt.Printf("Respuesta del %s: Comando BorrarBase no pudo ser ejecutado\n", fulcrum)
+	}
 }
 
 func asignarNombreFulcrum(puerto string) string {
