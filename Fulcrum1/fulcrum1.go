@@ -436,7 +436,50 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 	}, nil
 }
 
+func enviarComandoRegistroRequest(client pb.MiServicioClient, req *pb.RegistroRequest) (*pb.RegistroResponse, error) {
+	// Enviar comando a localhost:50053 y localhost:50054 para recibir "lineas" de los "Registro.txt" de los fulcrum 2 y 3
+	resp, err := client.ObtenerRegistros(context.Background(), req)
+	if err != nil {
+		return &pb.RegistroResponse{
+			Lineas:  nil,
+			Exitoso: false,
+		}, nil
+	} else {
+		return &pb.RegistroResponse{
+			Lineas:  resp.Lineas,
+			Exitoso: true,
+		}, nil
+	}
+
+}
+
+func iniciarMerge() {
+	for {
+		fmt.Print("Antes\n")
+		time.Sleep(8 * time.Second)
+		fmt.Print("Despues\n")
+		connFulcrum2, err2 := grpc.Dial("localhost:50053", grpc.WithInsecure())
+		if err2 != nil {
+			log.Fatalf("Error al conectar al servidor Fulcrum2: %v", err2)
+		}
+		defer connFulcrum2.Close()
+		clientFulcrum2 := pb.NewMiServicioClient(connFulcrum2)
+		req := &pb.RegistroRequest{}
+		respFulcrum2, errFulcrum2 := enviarComandoRegistroRequest(clientFulcrum2, req)
+		if errFulcrum2 != nil {
+			log.Fatalf("Error al obtener registros de Fulcrum2: %v", errFulcrum2)
+		}
+
+		for _, linea := range respFulcrum2.Lineas {
+			fmt.Println(linea)
+		}
+
+	}
+}
+
 func main() {
+	go iniciarMerge()
+
 	listener, err := net.Listen("tcp", ":50052")
 	if err != nil {
 		log.Fatalf("Error al escuchar: %v", err)

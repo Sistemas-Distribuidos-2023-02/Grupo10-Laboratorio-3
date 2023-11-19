@@ -10,6 +10,7 @@ service MiServicio {
     rpc ActualizarValor (ActualizarValorRequest) returns (Respuesta);
     rpc BorrarBase (BorrarBaseRequest) returns (Respuesta);
     rpc GetSoldados (GetSoldadosRequest) returns (Respuesta);
+    rpc ObtenerRegistros (RegistroRequest) returns (RegistroResponse);
 }
   
 message AgregarBaseRequest {
@@ -43,4 +44,13 @@ message Respuesta {
 message GetSoldadosRequest {
     string nombre_sector = 1;
     string nombre_base = 2;
+}
+
+message RegistroRequest {
+  repeated string lineas = 1;
+}
+
+message RegistroResponse {
+    repeated string lineas = 1;
+    bool exitoso = 2;
 }

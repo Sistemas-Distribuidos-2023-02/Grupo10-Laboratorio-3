@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	MiServicio_AgregarBase_FullMethodName     = "/main.MiServicio/AgregarBase"
-	MiServicio_RenombrarBase_FullMethodName   = "/main.MiServicio/RenombrarBase"
-	MiServicio_ActualizarValor_FullMethodName = "/main.MiServicio/ActualizarValor"
-	MiServicio_BorrarBase_FullMethodName      = "/main.MiServicio/BorrarBase"
-	MiServicio_GetSoldados_FullMethodName     = "/main.MiServicio/GetSoldados"
+	MiServicio_AgregarBase_FullMethodName      = "/main.MiServicio/AgregarBase"
+	MiServicio_RenombrarBase_FullMethodName    = "/main.MiServicio/RenombrarBase"
+	MiServicio_ActualizarValor_FullMethodName  = "/main.MiServicio/ActualizarValor"
+	MiServicio_BorrarBase_FullMethodName       = "/main.MiServicio/BorrarBase"
+	MiServicio_GetSoldados_FullMethodName      = "/main.MiServicio/GetSoldados"
+	MiServicio_ObtenerRegistros_FullMethodName = "/main.MiServicio/ObtenerRegistros"
 )
 
 // MiServicioClient is the client API for MiServicio service.
@@ -35,6 +36,7 @@ type MiServicioClient interface {
 	ActualizarValor(ctx context.Context, in *ActualizarValorRequest, opts ...grpc.CallOption) (*Respuesta, error)
 	BorrarBase(ctx context.Context, in *BorrarBaseRequest, opts ...grpc.CallOption) (*Respuesta, error)
 	GetSoldados(ctx context.Context, in *GetSoldadosRequest, opts ...grpc.CallOption) (*Respuesta, error)
+	ObtenerRegistros(ctx context.Context, in *RegistroRequest, opts ...grpc.CallOption) (*RegistroResponse, error)
 }
 
 type miServicioClient struct {
@@ -90,6 +92,15 @@ func (c *miServicioClient) GetSoldados(ctx context.Context, in *GetSoldadosReque
 	return out, nil
 }
 
+func (c *miServicioClient) ObtenerRegistros(ctx context.Context, in *RegistroRequest, opts ...grpc.CallOption) (*RegistroResponse, error) {
+	out := new(RegistroResponse)
+	err := c.cc.Invoke(ctx, MiServicio_ObtenerRegistros_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MiServicioServer is the server API for MiServicio service.
 // All implementations must embed UnimplementedMiServicioServer
 // for forward compatibility
@@ -99,6 +110,7 @@ type MiServicioServer interface {
 	ActualizarValor(context.Context, *ActualizarValorRequest) (*Respuesta, error)
 	BorrarBase(context.Context, *BorrarBaseRequest) (*Respuesta, error)
 	GetSoldados(context.Context, *GetSoldadosRequest) (*Respuesta, error)
+	ObtenerRegistros(context.Context, *RegistroRequest) (*RegistroResponse, error)
 	mustEmbedUnimplementedMiServicioServer()
 }
 
@@ -120,6 +132,9 @@ func (UnimplementedMiServicioServer) BorrarBase(context.Context, *BorrarBaseRequ
 }
 func (UnimplementedMiServicioServer) GetSoldados(context.Context, *GetSoldadosRequest) (*Respuesta, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSoldados not implemented")
+}
+func (UnimplementedMiServicioServer) ObtenerRegistros(context.Context, *RegistroRequest) (*RegistroResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ObtenerRegistros not implemented")
 }
 func (UnimplementedMiServicioServer) mustEmbedUnimplementedMiServicioServer() {}
 
@@ -224,6 +239,24 @@ func _MiServicio_GetSoldados_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MiServicio_ObtenerRegistros_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegistroRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MiServicioServer).ObtenerRegistros(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MiServicio_ObtenerRegistros_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MiServicioServer).ObtenerRegistros(ctx, req.(*RegistroRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MiServicio_ServiceDesc is the grpc.ServiceDesc for MiServicio service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +283,10 @@ var MiServicio_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSoldados",
 			Handler:    _MiServicio_GetSoldados_Handler,
+		},
+		{
+			MethodName: "ObtenerRegistros",
+			Handler:    _MiServicio_ObtenerRegistros_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

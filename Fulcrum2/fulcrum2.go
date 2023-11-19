@@ -435,6 +435,26 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 		Mensaje: "Base no encontrada en comando GetSoldados", Exitoso: true,
 	}, nil
 }
+
+func (s *baseServiceServer) ObtenerRegistros(ctx context.Context, req *pb.RegistroRequest) (*pb.RegistroResponse, error) {
+
+	contenidos, err := ioutil.ReadFile("Registro.txt")
+	if err != nil {
+		return &pb.RegistroResponse{
+			Lineas:  nil,
+			Exitoso: false,
+		}, nil
+	}
+
+	// Separar el contenido por líneas
+	datos := strings.Split(string(contenidos), "\n")
+
+	return &pb.RegistroResponse{
+		Lineas:  datos,
+		Exitoso: true,
+	}, nil
+}
+
 func main() {
 	listener, err := net.Listen("tcp", ":50053")
 	if err != nil {

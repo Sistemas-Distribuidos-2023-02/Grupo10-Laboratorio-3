@@ -1,0 +1,3 @@
+AgregarBase c1 c2 20 [0,0,1]
+AgregarBase c2 c2 40 [1,0,0]
+AgregarBase c3 c4 450 [0,0,1]
