@@ -1,1 +1,1 @@
-GetSoldados Peruano Jara Cantidad: 125   [0,1,0]  localhost:50054
+GetSoldados,Peruano,Jara,Cantidad: 123 , [0,90,0] ,localhost:50054

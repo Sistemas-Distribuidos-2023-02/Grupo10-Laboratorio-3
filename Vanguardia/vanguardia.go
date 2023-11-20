@@ -5,8 +5,10 @@ import (
 	pb "central/github.com/Sistemas-Distribuidos-2023-02/Grupo10-Laboratorio-3"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"google.golang.org/grpc"
@@ -27,6 +29,69 @@ func inicializarArchivo() error {
 	}
 	defer file.Close()
 	return nil
+}
+
+func MonotonicWrites(sector, reloj, puerto string) string {
+	contenidos, err := ioutil.ReadFile("registro.txt")
+	if err != nil {
+		return "problemas al abrir el archivo "
+	}
+	// Separar el contenido por líneas
+	lineas := strings.Split(string(contenidos), "\n")
+	for i := range lineas {
+		// Verificar si la línea está vacía
+		if lineas[i] == "" {
+			continue
+		}
+
+		// Separar elementos del archivo
+		partes := strings.Split(lineas[i], ",")
+		if len(partes) < 6 {
+			return "Error de formato en el archivo"
+		}
+
+		sectorA := partes[1]
+		relojA := partes[4]
+		puertoA := partes[5]
+
+		// Separar reloj archivo
+		separar := strings.Split(strings.Trim(relojA, "[]"), ",")
+		numero1, err := strconv.Atoi(strings.TrimSpace(separar[0]))
+		if err != nil {
+			return "problemas al abrir el archivo "
+		}
+		numero2, err := strconv.Atoi(strings.TrimSpace(separar[1]))
+		if err != nil {
+			return "problemas al abrir el archivo "
+		}
+		numero3, err := strconv.Atoi(strings.TrimSpace(separar[2]))
+		if err != nil {
+			return "problemas al abrir el archivo "
+		}
+
+		// Separar reloj a agregar
+		separar = strings.Split(strings.Trim(reloj, "[]"), ",")
+		numero4, err := strconv.Atoi(strings.TrimSpace(separar[0]))
+		if err != nil {
+			return "problemas al abrir el archivo "
+		}
+		numero5, err := strconv.Atoi(strings.TrimSpace(separar[1]))
+		if err != nil {
+			return "problemas al abrir el archivo "
+		}
+		numero6, err := strconv.Atoi(strings.TrimSpace(separar[2]))
+		if err != nil {
+			return "problemas al abrir el archivo "
+		}
+
+		if sectorA == sector && puertoA == puerto {
+			if numero1 > numero4 || numero2 > numero5 || numero3 > numero6 {
+				return "Error de consistencia"
+			}
+		}
+	}
+
+	return "No hay problemas"
 }
 
 func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBase string) {
@@ -63,19 +128,24 @@ func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBa
 		puerto = "localhost:50054"
 	}
 
-	// Escribir en registro.txt
-	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		fmt.Printf("Log de registro no pudo abrirse exitosamente")
-	}
-	defer logfile.Close()
-
-	_, err = fmt.Fprintf(logfile, "GetSoldados %s %s %s %s %s\n", nombreSector, nombreBase, soldados, reloj, puerto)
-	if err != nil {
-		fmt.Printf("No pudo escribirse correctamente en archivo log")
-	}
-
 	fmt.Printf("Respuesta del servidor: %s soldados\n", soldados)
+
+	monotonic := MonotonicWrites(nombreSector, reloj, puerto)
+	if monotonic == "No hay problemas" {
+		// Escribir en registro.txt
+		logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			fmt.Printf("Log de registro no pudo abrirse exitosamente")
+		}
+		defer logfile.Close()
+
+		_, err = fmt.Fprintf(logfile, "GetSoldados,%s,%s,%s,%s,%s\n", nombreSector, nombreBase, soldados, reloj, puerto)
+		if err != nil {
+			fmt.Printf("No pudo escribirse correctamente en archivo log")
+		}
+	} else {
+		fmt.Printf("No se pudo escribir en el archivo registro.txt debido a que hubo un error de consistencia detectado por Monotonic Writes \n")
+	}
 }
 
 func main() {
@@ -107,6 +177,7 @@ func main() {
 		} else {
 			fmt.Println("Entrada no válida")
 		}
+		fmt.Println("Ingrese otro comando:")
 	}
 
 }

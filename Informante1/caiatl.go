@@ -284,10 +284,6 @@ func main() {
 	for scanner.Scan() {
 		entrada := scanner.Text()
 		// Parsea la entrada para obtener los parámetros del comando
-		// Aquí deberías implementar la lógica para parsear la entrada y llamar a la función correspondiente
-		// Puedes usar strings.Split o alguna otra técnica de parsing
-
-		// Ejemplo de parsing (puede necesitar ser modificado según tus necesidades):
 		var comando, nombreSector, nombreBase, nuevaBase string
 		n, _ := fmt.Sscanf(entrada, "%s %s %s %s", &comando, &nombreSector, &nombreBase, &nuevaBase)
 		if n >= 3 {
