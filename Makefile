@@ -26,42 +26,32 @@ docker-broker:
 	docker run -d --name $(BROKER_DOCKER_IMAGE) -e SERVER_TYPE=broker -p $(BROKER_PORT):$(BROKER_PORT) $(BROKER_DOCKER_IMAGE)
 
 # Construir la imagen de los fulcrum
-docker-fulcrums:
-	@echo "SERVER_TYPE is set to: $(SERVER_TYPE)"
-	@if [ "$(SERVER_TYPE)" = "fulcrum1" ]; then \
-		docker build -t $(FULCRUM1_DOCKER_IMAGE) --build-arg SERVER_TYPE=fulcrum1 .; \
-		docker run -d --name $(FULCRUM1_DOCKER_IMAGE) -e SERVER_TYPE=$(SERVER_TYPE) -p $(FULCRUM1_PORT):$(FULCRUM1_PORT) $(FULCRUM1_DOCKER_IMAGE); \
-	elif [ "$(SERVER_TYPE)" = "fulcrum2" ]; then \
-		docker build -t $(FULCRUM2_DOCKER_IMAGE) --build-arg SERVER_TYPE=fulcrum2 .; \
-		docker run -d --name $(FULCRUM2_DOCKER_IMAGE) -e SERVER_TYPE=$(SERVER_TYPE) -p $(FULCRUM2_PORT):$(FULCRUM2_PORT) $(FULCRUM2_DOCKER_IMAGE); \
-	elif [ "$(SERVER_TYPE)" = "fulcrum3" ]; then \
-		docker build -t $(FULCRUM3_DOCKER_IMAGE) --build-arg SERVER_TYPE=fulcrum3 .; \
-		docker run -d --name $(FULCRUM3_DOCKER_IMAGE) -e SERVER_TYPE=$(SERVER_TYPE) -p $(FULCRUM3_PORT):$(FULCRUM3_PORT) $(FULCRUM3_DOCKER_IMAGE); \
-	else \
-		echo "Invalid SERVER_TYPE argument. Use 'fulcrum1', 'fulcrum2', or 'fulcrum3'."; \
-		exit 1; \
-	fi
+docker-f1:
+	docker build -t $(FULCRUM1_DOCKER_IMAGE) --build-arg SERVER_TYPE=f1 .
+	docker run -d --name $(FULCRUM1_DOCKER_IMAGE) -e SERVER_TYPE=f1 -p $(FULCRUM1_PORT):$(FULCRUM1_PORT) $(FULCRUM1_DOCKER_IMAGE)
+docker-f2:
+	docker build -t $(FULCRUM2_DOCKER_IMAGE) --build-arg SERVER_TYPE=f2 .
+	docker run -d --name $(FULCRUM2_DOCKER_IMAGE) -e SERVER_TYPE=f2 -p $(FULCRUM2_PORT):$(FULCRUM2_PORT) $(FULCRUM2_DOCKER_IMAGE)
+docker-f3:
+	docker build -t $(FULCRUM3_DOCKER_IMAGE) --build-arg SERVER_TYPE=f3 .
+	docker run -d --name $(FULCRUM3_DOCKER_IMAGE) -e SERVER_TYPE=f3 -p $(FULCRUM3_PORT):$(FULCRUM3_PORT) $(FULCRUM3_DOCKER_IMAGE)
 
 # Construir la imagen de los informantes
-docker-informantes:
-	@echo "SERVER_TYPE is set to: $(SERVER_TYPE)"
-	@if [ "$(SERVER_TYPE)" = "caiatl" ]; then \
-		docker build -t $(CAIATL_DOCKER_IMAGE) --build-arg SERVER_TYPE=caiatl .; \
-		docker run -it --name $(CAIATL_DOCKER_IMAGE) -e SERVER_TYPE=$(SERVER_TYPE) $(CAIATL_DOCKER_IMAGE); \
-	elif [ "$(SERVER_TYPE)" = "osiris" ]; then \
-		docker build -t $(OSIRIS_DOCKER_IMAGE) --build-arg SERVER_TYPE=osiris .; \
-		docker run -it --name $(OSIRIS_DOCKER_IMAGE) -e SERVER_TYPE=$(SERVER_TYPE) $(OSIRIS_DOCKER_IMAGE); \
-	else \
-		echo "Invalid SERVER_TYPE argument. Use 'caiatl',or 'osiris'."; \
-		exit 1; \
-	fi
-
+docker-i1:
+	docker build -t $(CAIATL_DOCKER_IMAGE) --build-arg SERVER_TYPE=i1 .
+	docker run -it --name $(CAIATL_DOCKER_IMAGE) -e SERVER_TYPE=i1 $(CAIATL_DOCKER_IMAGE)
+docker-i2:
+	docker build -t $(OSIRIS_DOCKER_IMAGE) --build-arg SERVER_TYPE=i2 .
+	docker run -it --name $(OSIRIS_DOCKER_IMAGE) -e SERVER_TYPE=i2 $(OSIRIS_DOCKER_IMAGE)
 
 # Usage: make help
 help:
 	@echo "Available targets:"
 	@echo "  docker-vanguardia   - Iniciar el codigo Docker para el servidor vanguardia"
 	@echo "  docker-broker   - Iniciar el codigo Docker para el servidor broker"
-	@echo "  docker-fulcrums  SERVER_TYPE={fulcrum1,fulcrum2,fulcrum3}  - Iniciar el codigo Docker para el servidor fulcrum especificado"
-	@echo "  docker-informantes  SERVER_TYPE={caiatl,osiris}  - Iniciar el codigo Docker para el servidor informante especificado"
+	@echo "  docker-f1  - Iniciar el codigo Docker para el servidor fulcrum1"
+	@echo "  docker-f2  - Iniciar el codigo Docker para el servidor fulcrum2"
+	@echo "  docker-f3  - Iniciar el codigo Docker para el servidor fulcrum3"
+	@echo "  docker-i1  - Iniciar el codigo Docker para el servidor informante Caiatl"
+	@echo "  docker-i2  - Iniciar el codigo Docker para el servidor informante Osiris"
 	@echo "  help             - Pide ayuda"
