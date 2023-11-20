@@ -1,0 +1,7 @@
+AgregarBase Lima Peru 2193 [0,1,0] localhost:50053
+AgregarBase Lima Peru 2192 [9,9,9] localhost:50054
+AgregarBase Lima Peru 2192 [3,0,0] localhost:50052
+AgregarBase Lima Peru 2192 [4,0,0] localhost:50052
+AgregarBase Lima Peru 2192 [0,2,0] localhost:50053
+AgregarBase Lima Peru 2192 [0,3,0] localhost:50053
+AgregarBase Lima Peru 2192 [9,9,9] localhost:50053
