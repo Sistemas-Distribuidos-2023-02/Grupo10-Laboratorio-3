@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -20,6 +21,28 @@ type baseServiceServer struct {
 	pb.UnimplementedMiServicioServer
 }
 
+func borrarArchivosEnCarpeta(carpeta string) error {
+	archivoEjecutable := "fulcrum3.go"
+	err := filepath.Walk(carpeta, func(ruta string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		// Ignorar la carpeta principal
+		if ruta == carpeta {
+			return nil
+		}
+		// Borrar solo archivos, no directorios
+		if !info.IsDir() && info.Name() != archivoEjecutable {
+			err := os.Remove(ruta)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("Archivo borrado: %s\n", ruta)
+		}
+		return nil
+	})
+	return err
+}
 func retornarReloj(nombreArchivo string) (string, error) {
 	archivo, err := os.Open(nombreArchivo)
 	if err != nil {
@@ -439,6 +462,17 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 }
 
 func main() {
+	//Elimina los archivos .txt que se encuentran con el archivo
+	carpetaAEliminar, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Error al obtener la ruta actual: %v\n", err)
+		return
+	}
+	err = borrarArchivosEnCarpeta(carpetaAEliminar)
+	if err != nil {
+		fmt.Printf("Error al borrar los archivos iniciales, Hay que ejecutar de nuevo: %v\n", err)
+		return
+	}
 	listener, err := net.Listen("tcp", ":50054")
 	if err != nil {
 		log.Fatalf("Error al escuchar: %v", err)
