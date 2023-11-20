@@ -70,13 +70,13 @@ func (s *baseServiceServer) RandomFulcrum() string {
 	fulcrum := rand.Intn(3) + 1
 	switch fulcrum {
 	case 1:
-		return "dist038:50052"
+		return "dist130:50052"
 	case 2:
-		return "dist039:50053"
+		return "dist131:50053"
 	case 3:
-		return "dist040:50054"
+		return "dist132:50054"
 	default:
-		return "dist039:50053"
+		return "dist131:50053"
 	}
 }
 

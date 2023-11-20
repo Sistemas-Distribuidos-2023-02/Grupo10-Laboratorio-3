@@ -123,9 +123,9 @@ func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBa
 	case " fulcrum1":
 		puerto = "localhost:50052"
 	case " fulcrum2":
-		puerto = "dist039:50053"
+		puerto = "dist131:50053"
 	case " fulcrum3":
-		puerto = "dist040:50054"
+		puerto = "dist132:50054"
 	}
 
 	fmt.Printf("Respuesta del servidor: %s soldados\n", soldados)
@@ -150,7 +150,7 @@ func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBa
 
 func main() {
 
-	conn, err := grpc.Dial("dist037:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("dist129:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectar al servidor gRPC: %v", err)
 	}
