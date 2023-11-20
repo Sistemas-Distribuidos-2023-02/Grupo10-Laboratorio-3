@@ -254,11 +254,11 @@ func asignarNombreFulcrum(puerto string) string {
 	var fulcrum string
 
 	switch puerto {
-	case "localhost:50052":
+	case "dist038:50052":
 		fulcrum = "fulcrum1"
 	case "localhost:50053":
 		fulcrum = "fulcrum2"
-	case "localhost:50054":
+	case "dist040:50054":
 		fulcrum = "fulcrum3"
 	}
 
@@ -266,7 +266,7 @@ func asignarNombreFulcrum(puerto string) string {
 }
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("dist037:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectar al servidor gRPC: %v", err)
 	}

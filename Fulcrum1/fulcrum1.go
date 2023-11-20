@@ -481,7 +481,7 @@ func iniciarMerge() {
 		fmt.Print("Antes\n")
 		time.Sleep(8 * time.Second)
 		fmt.Print("Despues\n")
-		connFulcrum2, err2 := grpc.Dial("localhost:50053", grpc.WithInsecure())
+		connFulcrum2, err2 := grpc.Dial("dist039:50053", grpc.WithInsecure())
 		if err2 != nil {
 			log.Fatalf("Error al conectar al servidor Fulcrum2: %v", err2)
 		}
