@@ -166,7 +166,26 @@ func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBa
 	}
 }
 
+func CrearRegistro() error {
+	// Lógica para crear un nuevo archivo de registro para el sector
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
+	if _, err := os.Stat(filepath.Join(dirActual, "registro.txt")); os.IsNotExist(err) {
+		file, err := os.Create(filepath.Join(dirActual, "registro.txt"))
+		if err != nil {
+			return err
+		}
+		file.Close()
+		return nil
+	} else {
+		return nil
+	}
+}
+
 func main() {
+	CrearRegistro()
 
 	conn, err := grpc.Dial("dist129.inf.santiago.usm.cl:50051", grpc.WithInsecure())
 	if err != nil {

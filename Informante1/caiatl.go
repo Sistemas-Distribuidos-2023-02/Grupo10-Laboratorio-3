@@ -290,7 +290,26 @@ func asignarNombreFulcrum(puerto string) string {
 	return fulcrum
 }
 
+func CrearRegistro() error {
+	// Lógica para crear un nuevo archivo de registro para el sector
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
+	if _, err := os.Stat(filepath.Join(dirActual, "registro.txt")); os.IsNotExist(err) {
+		file, err := os.Create(filepath.Join(dirActual, "registro.txt"))
+		if err != nil {
+			return err
+		}
+		file.Close()
+		return nil
+	} else {
+		return nil
+	}
+}
+
 func main() {
+	CrearRegistro()
 	conn, err := grpc.Dial("dist129.inf.santiago.usm.cl:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectar al servidor gRPC: %v", err)
@@ -312,8 +331,13 @@ func main() {
 		var comando, nombreSector, nombreBase, nuevaBase string
 		n, _ := fmt.Sscanf(entrada, "%s %s %s %s", &comando, &nombreSector, &nombreBase, &nuevaBase)
 		if n >= 3 {
-			if floatValue, err := strconv.ParseFloat(nuevaBase, 32); err == nil {
-				valor := float32(floatValue)
+			if floatValue, err := strconv.ParseFloat(nuevaBase, 32); err == nil || nuevaBase == " " || nuevaBase == "" {
+				valor := float32(0)
+				if nuevaBase == " " || nuevaBase == "" {
+					valor = 0
+				} else {
+					valor = float32(floatValue)
+				}
 				switch comando {
 				case "AgregarBase":
 					enviarComandoAgregarBase(client, nombreSector, nombreBase, valor)

@@ -45,7 +45,7 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 
 func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldadosRequest) (*pb.Respuesta, error) {
 	puerto := s.RandomFulcrum()
-
+	fmt.Printf("Solicitud de GetSoldados recibida, Se envía al puerto: %s", puerto)
 	//Conectar a fc1
 	conn, err := grpc.Dial(fmt.Sprintf(puerto), grpc.WithInsecure())
 	if err != nil {
