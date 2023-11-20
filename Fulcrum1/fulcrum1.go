@@ -438,21 +438,18 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 	}, nil
 }
 
-func enviarComandoRegistroRequest(client pb.MiServicioClient, req *pb.RegistroRequest) (*pb.RegistroResponse, error) {
+func enviarComandoRegistroRequest(client pb.MiServicioClient) (*pb.RegistroResponse, error) {
 	// Enviar comando a localhost:50053 y localhost:50054 para recibir "lineas" de los "Registro.txt" de los fulcrum 2 y 3
+	fmt.Print("Dentro1\n")
+	req := &pb.RegistroRequest{}
 	resp, err := client.ObtenerRegistros(context.Background(), req)
+	fmt.Print("Llamado a Fulcrum2\n")
 	if err != nil {
-		return &pb.RegistroResponse{
-			Lineas:  nil,
-			Exitoso: false,
-		}, nil
-	} else {
-		return &pb.RegistroResponse{
-			Lineas:  resp.Lineas,
-			Exitoso: true,
-		}, nil
+		log.Fatalf("Error al enviar comando GetSoldados: %v", err)
+		return nil, nil
 	}
-
+	fmt.Printf("Respuesta del servidor: %s\n", resp.Lineas)
+	return resp, nil
 }
 
 func iniciarMerge() {
@@ -464,10 +461,11 @@ func iniciarMerge() {
 		if err2 != nil {
 			log.Fatalf("Error al conectar al servidor Fulcrum2: %v", err2)
 		}
+		fmt.Print("Despues2\n")
 		defer connFulcrum2.Close()
 		clientFulcrum2 := pb.NewMiServicioClient(connFulcrum2)
-		req := &pb.RegistroRequest{}
-		respFulcrum2, errFulcrum2 := enviarComandoRegistroRequest(clientFulcrum2, req)
+		respFulcrum2, errFulcrum2 := enviarComandoRegistroRequest(clientFulcrum2)
+		fmt.Print("Despues3\n")
 		if errFulcrum2 != nil {
 			log.Fatalf("Error al obtener registros de Fulcrum2: %v", errFulcrum2)
 		}
