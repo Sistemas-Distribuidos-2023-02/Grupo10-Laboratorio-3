@@ -1,4 +1,1 @@
-AgregarBase Peruano Gaete 123 [0,0,1] localhost:50054
-RenombrarBase Peruano Gaete Dante [0,0,2] localhost:50054
-ActualizarValor Peruano Dante 1238 [0,0,3] localhost:50054
-BorrarBase Peruano Dante [0,1,0] localhost:50053
+AgregarBase Peruano Jara 125 [0,1,0] localhost:50053
