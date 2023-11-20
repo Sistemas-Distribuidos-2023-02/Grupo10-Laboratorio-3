@@ -62,8 +62,11 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 	fmt.Printf("Respuesta del fulcrum:%s %s\n", puerto, respuestaFulcrum.Mensaje)
 
 	resultado := fmt.Sprintf("Cantidad: %s", respuestaFulcrum.Mensaje)
-
-	return &pb.Respuesta{Mensaje: resultado, Exitoso: true}, nil
+	if respuestaFulcrum.Exitoso == false {
+		return &pb.Respuesta{Mensaje: resultado, Exitoso: false}, nil
+	} else {
+		return &pb.Respuesta{Mensaje: resultado, Exitoso: true}, nil
+	}
 }
 
 func (s *baseServiceServer) RandomFulcrum() string {
