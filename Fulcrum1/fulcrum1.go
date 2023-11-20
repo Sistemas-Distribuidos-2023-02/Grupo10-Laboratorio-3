@@ -458,7 +458,7 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 
 	// La base no fue encontrada
 	return &pb.Respuesta{
-		Mensaje: "Base no encontrada en comando GetSoldados", Exitoso: true,
+		Mensaje: "Base no encontrada en comando GetSoldados", Exitoso: false,
 	}, nil
 }
 

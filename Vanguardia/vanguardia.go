@@ -105,6 +105,11 @@ func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBa
 		log.Fatalf("Error al enviar comando GetSoldados: %v", err)
 	}
 
+	if resp.Exitoso == false {
+		fmt.Printf("%s", resp.Mensaje)
+		return
+	}
+
 	if PrimeraEscritura {
 		err = inicializarArchivo()
 		if err != nil {
