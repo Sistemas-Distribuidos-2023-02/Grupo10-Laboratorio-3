@@ -321,11 +321,11 @@ func asignarNombreFulcrum(puerto string) string {
 	var fulcrum string
 
 	switch puerto {
-	case "dist130:50052":
+	case "dist130.inf.santiago.usm.cl:50052":
 		fulcrum = "fulcrum1"
-	case "dist131:50053":
+	case "dist131.inf.santiago.usm.cl:50053":
 		fulcrum = "fulcrum2"
-	case "localhost:50054":
+	case "dist132.inf.santiago.usm.cl:50054":
 		fulcrum = "fulcrum3"
 	}
 
@@ -333,7 +333,7 @@ func asignarNombreFulcrum(puerto string) string {
 }
 
 func main() {
-	conn, err := grpc.Dial("dist129:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial("dist129.inf.santiago.usm.cl:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error al conectar al servidor gRPC: %v", err)
 	}

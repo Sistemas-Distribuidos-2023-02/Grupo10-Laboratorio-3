@@ -476,30 +476,30 @@ func enviarComandoRegistroRequest(client pb.MiServicioClient) (*pb.RegistroRespo
 	return resp, nil
 }
 
-func iniciarMerge() {
-	for {
-		fmt.Print("Antes\n")
-		time.Sleep(8 * time.Second)
-		fmt.Print("Despues\n")
-		connFulcrum2, err2 := grpc.Dial("dist131:50053", grpc.WithInsecure())
-		if err2 != nil {
-			log.Fatalf("Error al conectar al servidor Fulcrum2: %v", err2)
-		}
-		fmt.Print("Despues2\n")
-		defer connFulcrum2.Close()
-		clientFulcrum2 := pb.NewMiServicioClient(connFulcrum2)
-		respFulcrum2, errFulcrum2 := enviarComandoRegistroRequest(clientFulcrum2)
-		fmt.Print("Despues3\n")
-		if errFulcrum2 != nil {
-			log.Fatalf("Error al obtener registros de Fulcrum2: %v", errFulcrum2)
-		}
+// func iniciarMerge() {
+// 	for {
+// 		fmt.Print("Antes\n")
+// 		time.Sleep(8 * time.Second)
+// 		fmt.Print("Despues\n")
+// 		connFulcrum2, err2 := grpc.Dial("dist131.inf.santiago.usm.cl:50053", grpc.WithInsecure())
+// 		if err2 != nil {
+// 			log.Fatalf("Error al conectar al servidor Fulcrum2: %v", err2)
+// 		}
+// 		fmt.Print("Despues2\n")
+// 		defer connFulcrum2.Close()
+// 		clientFulcrum2 := pb.NewMiServicioClient(connFulcrum2)
+// 		respFulcrum2, errFulcrum2 := enviarComandoRegistroRequest(clientFulcrum2)
+// 		fmt.Print("Despues3\n")
+// 		if errFulcrum2 != nil {
+// 			log.Fatalf("Error al obtener registros de Fulcrum2: %v", errFulcrum2)
+// 		}
 
-		for _, linea := range respFulcrum2.Lineas {
-			fmt.Println(linea)
-		}
+// 		for _, linea := range respFulcrum2.Lineas {
+// 			fmt.Println(linea)
+// 		}
 
-	}
-}
+// 	}
+// }
 
 func main() {
 	//Elimina los archivos .txt que se encuentran con el archivo
@@ -514,7 +514,7 @@ func main() {
 		return
 	}
 
-	go iniciarMerge()
+	//go iniciarMerge()
 
 	listener, err := net.Listen("tcp", ":50052")
 	if err != nil {
