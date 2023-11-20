@@ -1,2 +1,0 @@
-AgregarBase c1 c2 20 [14:25:05]
-AgregarBase c3 c4 450 [14:25:18]

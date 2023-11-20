@@ -418,14 +418,16 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 
 	// Convertir el contenido del archivo a líneas
 	lineas := strings.Split(string(data), "\n")
+	reloj := lineas[0]
 
 	// Buscar la base en las líneas del archivo
 	for _, linea := range lineas {
 		elementos := strings.Fields(linea)
 		if len(elementos) >= 3 && elementos[0] == req.NombreSector && elementos[1] == req.NombreBase {
 			// Encontramos la base, devolver la cantidad de soldados
+			contenido := fmt.Sprintf("%s, %s", elementos[2], reloj)
 			return &pb.Respuesta{
-				Mensaje: elementos[2], Exitoso: true,
+				Mensaje: contenido, Exitoso: true,
 			}, nil
 		}
 	}

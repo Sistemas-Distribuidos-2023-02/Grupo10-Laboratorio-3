@@ -70,7 +70,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f %s\n", req.NombreSector, req.NombreBase, req.Valor, reloj)
+	_, err = fmt.Fprintf(logfile, "AgregarBase %s %s %.0f %s %s\n", req.NombreSector, req.NombreBase, req.Valor, reloj, puerto)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -127,7 +127,7 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre, reloj)
+	_, err = fmt.Fprintf(logfile, "RenombrarBase %s %s %s %s %s\n", req.NombreSector, req.NombreBase, req.NuevoNombre, reloj, puerto)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -184,7 +184,7 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "ActualizarValor %s %s %.0f %s\n", req.NombreSector, req.NombreBase, req.NuevoValor, reloj)
+	_, err = fmt.Fprintf(logfile, "ActualizarValor %s %s %.0f %s %s\n", req.NombreSector, req.NombreBase, req.NuevoValor, reloj, puerto)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
@@ -239,7 +239,7 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	}
 	defer logfile.Close()
 
-	_, err = fmt.Fprintf(logfile, "BorrarBase %s %s %s\n", req.NombreSector, req.NombreBase, reloj)
+	_, err = fmt.Fprintf(logfile, "BorrarBase %s %s %s %s\n", req.NombreSector, req.NombreBase, reloj, puerto)
 	if err != nil {
 		fmt.Printf("No pudo escribirse correctamente en archivo log")
 	}
