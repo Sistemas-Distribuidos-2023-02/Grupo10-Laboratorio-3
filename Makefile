@@ -1,4 +1,4 @@
-# Define variables
+# Definir variables
 BROKER_DOCKER_IMAGE = broker-server
 FULCRUM1_DOCKER_IMAGE = fulcrum1-server
 FULCRUM2_DOCKER_IMAGE = fulcrum2-server
@@ -15,17 +15,17 @@ FULCRUM3_PORT= 50054
 # Define the default target
 all: help
 
-# Build the ONU server Docker image
+# Construir la imagen de la vanguardia
 docker-vanguardia:
 	docker build -t $(VANGUARDIA_DOCKER_IMAGE) --build-arg SERVER_TYPE=vanguardia .
 	docker run -it --name $(VANGUARDIA_DOCKER_IMAGE) -e SERVER_TYPE=vanguardia $(VANGUARDIA_DOCKER_IMAGE)
 
-# Build the OMS server Docker image
+# Construir la imagen del broker
 docker-broker:
 	docker build -t $(BROKER_DOCKER_IMAGE) --build-arg SERVER_TYPE=broker .
 	docker run -d --name $(BROKER_DOCKER_IMAGE) -e SERVER_TYPE=broker -p $(BROKER_PORT):$(BROKER_PORT) $(BROKER_DOCKER_IMAGE)
 
-# Build the FULCRUMS server Docker images
+# Construir la imagen de los fulcrum
 docker-fulcrums:
 	@echo "SERVER_TYPE is set to: $(SERVER_TYPE)"
 	@if [ "$(SERVER_TYPE)" = "fulcrum1" ]; then \
@@ -42,7 +42,7 @@ docker-fulcrums:
 		exit 1; \
 	fi
 
-# Build the CONTINENTES server Docker images
+# Construir la imagen de los informantes
 docker-informantes:
 	@echo "SERVER_TYPE is set to: $(SERVER_TYPE)"
 	@if [ "$(SERVER_TYPE)" = "caiatl" ]; then \
