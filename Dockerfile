@@ -31,29 +31,29 @@ CMD if [ "$SERVER_TYPE" = "vanguardia" ]; then \
         cd /app/Broker; \
         go build -o broker-server; \
         ./broker-server; \
-    elif [ "$SERVER_TYPE" = "fulcrum1" ]; then \
+    elif [ "$SERVER_TYPE" = "f1" ]; then \
         PORT=$FULCRUM1_PORT; \
         cd /app/Fulcrum1; \
-        go build -o fulcrum1-server; \
-        ./fulcrum1-server; \
-    elif [ "$SERVER_TYPE" = "fulcrum2" ]; then \
+        go build -o f1-server; \
+        ./f1-server; \
+    elif [ "$SERVER_TYPE" = "f2" ]; then \
         PORT=$FULCRUM2_PORT; \
         cd /app/Fulcrum2; \
-        go build -o fulcrum2-server; \
-        ./fulcrum2-server; \
-    elif [ "$SERVER_TYPE" = "fulcrum3" ]; then \
+        go build -o f2-server; \
+        ./f2-server; \
+    elif [ "$SERVER_TYPE" = "f3" ]; then \
         PORT=$FULCRUM3_PORT; \
         cd /app/Fulcrum3; \
-        go build -o fulcrum3-server; \
-        ./fulcrum3-server; \
-    elif [ "$SERVER_TYPE" = "caiatl" ]; then \
+        go build -o f3-server; \
+        ./f3-server; \
+    elif [ "$SERVER_TYPE" = "i1" ]; then \
         cd /app/Informante1; \
-        go build -o caiatl-server; \
-        ./caiatl-server; \
-    elif [ "$SERVER_TYPE" = "osiris" ]; then \
+        go build -o i1-server; \
+        ./i1-server; \
+    elif [ "$SERVER_TYPE" = "i2" ]; then \
         cd /app/Informante2; \
-        go build -o osiris-server; \
-        ./osiris-server; \
+        go build -o i2-server; \
+        ./i2-server; \
     else \
         echo "Invalid SERVER_TYPE argument."; \
     fi
