@@ -22,7 +22,7 @@ func MonotonicWrites(sector, reloj, puerto string) string {
 	if err != nil {
 		fmt.Println("Error al obtener el directorio actual:", err)
 	}
-	contenidos, err := ioutil.ReadFile(filepath.Join(dirActual, "Informante2", "registro.txt"))
+	contenidos, err := ioutil.ReadFile(filepath.Join(dirActual, "registro.txt"))
 	if err != nil {
 		return "problemas al abrir el archivo "
 	}
@@ -90,7 +90,7 @@ func inicializarArchivo() error {
 		fmt.Println("Error al obtener el directorio actual:", err)
 	}
 	// Reinicia el contenido del archivo registro
-	file, err := os.OpenFile(filepath.Join(dirActual, "Informante2", "registro.txt"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filepath.Join(dirActual, "registro.txt"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("Error al abrir el archivo registro.txt: %v", err)
 		return err
@@ -141,7 +141,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	monotonic := MonotonicWrites(req.NombreSector, reloj, puerto)
 	if monotonic == "No hay problemas" {
 		//Escritura en el registro.txt
-		logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante2", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
+		logfile, err := os.OpenFile(filepath.Join(dirActual, "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Printf("Log de registro no pudo abrirse exitosamente")
 		}
@@ -203,7 +203,7 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	monotonic := MonotonicWrites(req.NombreSector, reloj, puerto)
 	if monotonic == "No hay problemas" {
 		//Escritura en el registro.txt
-		logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante2", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
+		logfile, err := os.OpenFile(filepath.Join(dirActual, "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Printf("Log de registro no pudo abrirse exitosamente")
 		}
@@ -265,7 +265,7 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	monotonic := MonotonicWrites(req.NombreSector, reloj, puerto)
 	if monotonic == "No hay problemas" {
 		//Escritura en el registro.txt
-		logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante2", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
+		logfile, err := os.OpenFile(filepath.Join(dirActual, "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Printf("Log de registro no pudo abrirse exitosamente")
 		}
@@ -326,7 +326,7 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	monotonic := MonotonicWrites(req.NombreSector, reloj, puerto)
 	if monotonic == "No hay problemas" {
 		//Escritura en el registro.txt
-		logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante2", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
+		logfile, err := os.OpenFile(filepath.Join(dirActual, "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Printf("Log de registro no pudo abrirse exitosamente")
 		}
