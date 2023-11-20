@@ -1,0 +1,29 @@
+version: '3'
+services:
+  vanguardia:
+    build:
+      context: ./Vanguardia
+
+  broker:
+    build:
+      context: ./Broker
+      
+  fulcrum1:
+    build:
+      context: ./Fulcrum1
+
+  fulcrum2:
+    build:
+      context: ./Fulcrum2
+
+  fulcrum3:
+    build:
+      context: ./Fulcrum3
+
+  caiatl:
+    build:
+      context: ./Informante1
+
+  osiris:
+    build:
+      context: ./Informante2
