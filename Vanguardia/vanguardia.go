@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -21,8 +22,12 @@ type baseServiceServer struct {
 var PrimeraEscritura = true
 
 func inicializarArchivo() error {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	// Reinicia el contenido del archivo registro
-	file, err := os.OpenFile("Registro.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filepath.Join(dirActual, "Vanguardia", "registro.txt"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("Error al abrir el archivo registro.txt: %v", err)
 		return err
@@ -32,7 +37,11 @@ func inicializarArchivo() error {
 }
 
 func MonotonicWrites(sector, reloj, puerto string) string {
-	contenidos, err := ioutil.ReadFile("registro.txt")
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
+	contenidos, err := ioutil.ReadFile(filepath.Join(dirActual, "Vanguardia", "registro.txt"))
 	if err != nil {
 		return "problemas al abrir el archivo "
 	}
@@ -136,9 +145,13 @@ func enviarComandoGetSoldados(client pb.MiServicioClient, nombreSector, nombreBa
 	fmt.Printf("Respuesta del servidor: %s soldados\n", soldados)
 
 	monotonic := MonotonicWrites(nombreSector, reloj, puerto)
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	if monotonic == "No hay problemas" {
 		// Escribir en registro.txt
-		logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+		logfile, err := os.OpenFile(filepath.Join(dirActual, "Vanguardia", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			fmt.Printf("Log de registro no pudo abrirse exitosamente")
 		}

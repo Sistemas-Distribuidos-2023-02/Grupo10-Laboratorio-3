@@ -43,8 +43,13 @@ func borrarArchivosEnCarpeta(carpeta string) error {
 	})
 	return err
 }
+
 func retornarReloj(nombreArchivo string) (string, error) {
-	archivo, err := os.Open(nombreArchivo)
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
+	archivo, err := os.Open(filepath.Join(dirActual, "Fulcrum3", nombreArchivo))
 	if err != nil {
 		return "", err
 	}
@@ -65,8 +70,12 @@ func retornarReloj(nombreArchivo string) (string, error) {
 }
 
 func editarReloj(nombreArchivo string) error {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	// Leer el contenido actual del archivo
-	contenidos, err := ioutil.ReadFile(nombreArchivo)
+	contenidos, err := ioutil.ReadFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo))
 	if err != nil {
 		return err
 	}
@@ -79,7 +88,7 @@ func editarReloj(nombreArchivo string) error {
 	numero1, err := strconv.Atoi(strings.TrimSpace(separar[0]))
 	numero2, err := strconv.Atoi(strings.TrimSpace(separar[1]))
 	numero3, err := strconv.Atoi(strings.TrimSpace(separar[2]))
-	numero3 = numero3 + 1
+	numero1 = numero1 + 1
 	// Crear una nueva linea
 	nuevaLinea := fmt.Sprintf("[%d,%d,%d]", numero1, numero2, numero3)
 
@@ -109,7 +118,11 @@ func editarReloj(nombreArchivo string) error {
 // CrearRegistro crea un nuevo archivo de registro para el sector
 func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 	// Lógica para crear un nuevo archivo de registro para el sector
-	file, err := os.Create(sectorFileName)
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
+	file, err := os.Create(filepath.Join(dirActual, "Fulcrum3", sectorFileName))
 	if err != nil {
 		return err
 	}
@@ -118,13 +131,17 @@ func (s *baseServiceServer) CrearRegistro(sectorFileName string) error {
 }
 
 func (s *baseServiceServer) AgregarLOG(info, sector, base, nuevonombre string, valor, nuevovalor float32) (*pb.Respuesta, error) {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	// Creación del log en caso de no existir
-	if _, err := os.Stat("Registro.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(dirActual, "Fulcrum3", "Registro.txt")); os.IsNotExist(err) {
 		if err := s.CrearRegistro("Registro.txt"); err != nil {
 			return &pb.Respuesta{Mensaje: "Log de registro no pudo ser creado", Exitoso: false}, err
 		}
 	}
-	logfile, err := os.OpenFile("Registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile(filepath.Join(dirActual, "Fulcrum3", "Registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
 	}
@@ -160,19 +177,23 @@ func (s *baseServiceServer) AgregarLOG(info, sector, base, nuevonombre string, v
 }
 
 func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBaseRequest) (*pb.Respuesta, error) {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	nombreArchivo := fmt.Sprintf("%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(dirActual, "Fulcrum3", nombreArchivo)); os.IsNotExist(err) {
 		// El archivo no existe, entonces se crea uno nuevo
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo ser creado", Exitoso: false}, err
 		}
-		file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
+		file, err := os.OpenFile((filepath.Join(dirActual, "Fulcrum3", nombreArchivo)), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 		}
 		defer file.Close()
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,0,1]\n")
+		_, err = fmt.Fprintf(file, "[1,0,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
@@ -194,7 +215,7 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		return &pb.Respuesta{Mensaje: reloj, Exitoso: true}, nil
 	}
 	// Abrir archivo de sector
-	file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 	}
@@ -211,7 +232,7 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 	}
 
-	logfile, err := os.OpenFile("Registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile(filepath.Join(dirActual, "Fulcrum3", "Registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "Log de registro no pudo abrirse exitosamente", Exitoso: false}, err
 	}
@@ -231,21 +252,25 @@ func (s *baseServiceServer) AgregarBase(ctx context.Context, req *pb.AgregarBase
 }
 
 func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.RenombrarBaseRequest) (*pb.Respuesta, error) {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	nombreArchivo := fmt.Sprintf("%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(dirActual, "Fulcrum3", nombreArchivo)); os.IsNotExist(err) {
 		//Hay que agregar lo de los logs
 		// El archivo no existe, entonces se crea uno nuevo
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo ser creado", Exitoso: false}, err
 		}
-		file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
+		file, err := os.OpenFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 		}
 		defer file.Close()
 
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,0,1]\n")
+		_, err = fmt.Fprintf(file, "[1,0,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
@@ -257,7 +282,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
 	} else {
-		contenido, err := ioutil.ReadFile(nombreArchivo)
+		contenido, err := ioutil.ReadFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo))
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -275,7 +300,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 			lineas = append(lineas, nuevalinea)
 		}
 		nuevoContenido := strings.Join(lineas, "\n")
-		err = ioutil.WriteFile(nombreArchivo, []byte(nuevoContenido), 0644)
+		err = ioutil.WriteFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), []byte(nuevoContenido), 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando RenombrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -286,7 +311,7 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 		}
 	}
 	// función para manipular el registro
-	_, err := s.AgregarLOG("renombrar", req.NombreSector, req.NombreBase, req.NuevoNombre, 0, 0)
+	_, err = s.AgregarLOG("renombrar", req.NombreSector, req.NombreBase, req.NuevoNombre, 0, 0)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -299,20 +324,24 @@ func (s *baseServiceServer) RenombrarBase(ctx context.Context, req *pb.Renombrar
 }
 
 func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.ActualizarValorRequest) (*pb.Respuesta, error) {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	nombreArchivo := fmt.Sprintf("%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(dirActual, "Fulcrum3", nombreArchivo)); os.IsNotExist(err) {
 		//Hay que agregar lo de los logs
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo ser creado", Exitoso: false}, err
 		}
-		file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
+		file, err := os.OpenFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 		}
 		defer file.Close()
 
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,0,1]\n")
+		_, err = fmt.Fprintf(file, "[1,0,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
@@ -324,7 +353,7 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 			return &pb.Respuesta{Mensaje: "Comando ActualizaValor no pudo ser ejecutado", Exitoso: false}, err
 		}
 	} else {
-		contenido, err := ioutil.ReadFile(nombreArchivo)
+		contenido, err := ioutil.ReadFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo))
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando ActualizaValor no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -344,7 +373,7 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 		}
 		nuevoContenido := strings.Join(lineas, "\n")
 
-		err = ioutil.WriteFile(nombreArchivo, []byte(nuevoContenido), 0644)
+		err = ioutil.WriteFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), []byte(nuevoContenido), 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando ActualizaValor no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -355,7 +384,7 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 		}
 	}
 	// función para manipular el log
-	_, err := s.AgregarLOG("actualizar", req.NombreSector, req.NombreBase, "", 0, req.NuevoValor)
+	_, err = s.AgregarLOG("actualizar", req.NombreSector, req.NombreBase, "", 0, req.NuevoValor)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -368,25 +397,29 @@ func (s *baseServiceServer) ActualizarValor(ctx context.Context, req *pb.Actuali
 }
 
 func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRequest) (*pb.Respuesta, error) {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	nombreArchivo := fmt.Sprintf("%s.txt", req.NombreSector)
-	if _, err := os.Stat(nombreArchivo); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(dirActual, "Fulcrum3", nombreArchivo)); os.IsNotExist(err) {
 		// El archivo no existe, entonces se crea uno nuevo
 		if err := s.CrearRegistro(nombreArchivo); err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo ser creado", Exitoso: false}, err
 		}
-		file, err := os.OpenFile(nombreArchivo, os.O_APPEND|os.O_WRONLY, 0644)
+		file, err := os.OpenFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), os.O_APPEND|os.O_WRONLY, 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Archivo de Sector no pudo abrirse exitosamente", Exitoso: false}, err
 		}
 		defer file.Close()
 
 		// Definir reloj
-		_, err = fmt.Fprintf(file, "[0,0,1]\n")
+		_, err = fmt.Fprintf(file, "[1,0,0]\n")
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo de sector", Exitoso: false}, err
 		}
 	} else {
-		contenido, err := ioutil.ReadFile(nombreArchivo)
+		contenido, err := ioutil.ReadFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo))
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando BorrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -404,7 +437,7 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 		}
 		nuevoContenido := strings.Join(nuevasLineas, "\n")
 
-		err = ioutil.WriteFile(nombreArchivo, []byte(nuevoContenido), 0644)
+		err = ioutil.WriteFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo), []byte(nuevoContenido), 0644)
 		if err != nil {
 			return &pb.Respuesta{Mensaje: "Comando BorrarBase no pudo ser ejecutado", Exitoso: false}, err
 		}
@@ -415,7 +448,7 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 		}
 	}
 	// función para manipular el log
-	_, err := s.AgregarLOG("borrar", req.NombreSector, req.NombreBase, "", 0, 0)
+	_, err = s.AgregarLOG("borrar", req.NombreSector, req.NombreBase, "", 0, 0)
 	if err != nil {
 		return &pb.Respuesta{Mensaje: "No pudo escribirse correctamente en archivo log", Exitoso: false}, err
 	}
@@ -428,11 +461,15 @@ func (s *baseServiceServer) BorrarBase(ctx context.Context, req *pb.BorrarBaseRe
 }
 
 func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldadosRequest) (*pb.Respuesta, error) {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	// Nombre del archivo del sector
 	nombreArchivo := fmt.Sprintf("%s.txt", req.NombreSector)
 
 	// Leer el contenido del archivo
-	data, err := ioutil.ReadFile(nombreArchivo)
+	data, err := ioutil.ReadFile(filepath.Join(dirActual, "Fulcrum3", nombreArchivo))
 	if err != nil {
 		return &pb.Respuesta{
 			Mensaje: "Sector no encontrado en Fulcrum 1", Exitoso: false,
@@ -448,7 +485,7 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 		elementos := strings.Fields(linea)
 		if len(elementos) >= 3 && elementos[0] == req.NombreSector && elementos[1] == req.NombreBase {
 			// Encontramos la base, devolver la cantidad de soldados
-			contenido := fmt.Sprintf("%s - %s - fulcrum3", elementos[2], reloj)
+			contenido := fmt.Sprintf("%s - %s - Fulcrum3", elementos[2], reloj)
 			return &pb.Respuesta{
 				Mensaje: contenido, Exitoso: true,
 			}, nil

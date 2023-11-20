@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"google.golang.org/grpc"
@@ -15,8 +16,12 @@ import (
 var PrimeraEscritura = true
 
 func inicializarArchivo() error {
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
+	}
 	// Reinicia el contenido del archivo registro
-	file, err := os.OpenFile("Registro.txt", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filepath.Join(dirActual, "Informante1", "registro.txt"), os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("Error al abrir el archivo registro.txt: %v", err)
 		return err
@@ -30,6 +35,11 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 		NombreSector: nombreSector,
 		NombreBase:   nombreBase,
 		Valor:        valor,
+	}
+
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
 	}
 
 	resp, err := client.AgregarBase(context.Background(), req)
@@ -64,7 +74,7 @@ func enviarComandoAgregarBase(client pb.MiServicioClient, nombreSector, nombreBa
 	}
 	reloj := respFulcrum.Mensaje
 	//Escritura en el registro.txt
-	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante1", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Log de registro no pudo abrirse exitosamente")
 	}
@@ -87,6 +97,11 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 		NombreSector: nombreSector,
 		NombreBase:   nombreBase,
 		NuevoNombre:  fmt.Sprintf("%v", valor),
+	}
+
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
 	}
 
 	resp, err := client.RenombrarBase(context.Background(), req)
@@ -121,7 +136,7 @@ func enviarComandoRenombrarBase(client pb.MiServicioClient, nombreSector, nombre
 	}
 	reloj := respFulcrum.Mensaje
 	//Escritura en el registro.txt
-	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante1", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Log de registro no pudo abrirse exitosamente")
 	}
@@ -144,6 +159,11 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 		NombreSector: nombreSector,
 		NombreBase:   nombreBase,
 		NuevoValor:   nuevoValor,
+	}
+
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
 	}
 
 	resp, err := client.ActualizarValor(context.Background(), req)
@@ -178,7 +198,7 @@ func enviarComandoActualizarValor(client pb.MiServicioClient, nombreSector, nomb
 	}
 	//Escritura en el registro.txt
 	reloj := respFulcrum.Mensaje
-	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante1", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Log de registro no pudo abrirse exitosamente")
 	}
@@ -199,6 +219,11 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	req := &pb.BorrarBaseRequest{
 		NombreSector: nombreSector,
 		NombreBase:   nombreBase,
+	}
+
+	dirActual, err := os.Getwd()
+	if err != nil {
+		fmt.Println("Error al obtener el directorio actual:", err)
 	}
 
 	resp, err := client.BorrarBase(context.Background(), req)
@@ -233,7 +258,7 @@ func enviarComandoBorrarBase(client pb.MiServicioClient, nombreSector, nombreBas
 	}
 	//Escritura en el registro.txt
 	reloj := respFulcrum.Mensaje
-	logfile, err := os.OpenFile("registro.txt", os.O_APPEND|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile(filepath.Join(dirActual, "Informante1", "registro.txt"), os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Printf("Log de registro no pudo abrirse exitosamente")
 	}
