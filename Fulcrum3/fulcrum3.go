@@ -472,7 +472,7 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 	data, err := ioutil.ReadFile(filepath.Join(dirActual, nombreArchivo))
 	if err != nil {
 		return &pb.Respuesta{
-			Mensaje: "Sector no encontrado en Fulcrum 1", Exitoso: false,
+			Mensaje: "Sector no encontrado en Fulcrum 3", Exitoso: false,
 		}, nil
 	}
 
@@ -494,7 +494,7 @@ func (s *baseServiceServer) GetSoldados(ctx context.Context, req *pb.GetSoldados
 
 	// La base no fue encontrada
 	return &pb.Respuesta{
-		Mensaje: "Base no encontrada en comando GetSoldados", Exitoso: false,
+		Mensaje: "Base no encontrada en Fulcrum3", Exitoso: false,
 	}, nil
 }
 
